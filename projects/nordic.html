@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nordic Architecture</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --white: #ede8e0;
+            --off-white: #17110c;
+            --warm-gray: #2e2318;
+            --text: #ede8e0;
+            --text-secondary: #9a8d7e;
+            --accent: #c8835a;
+            --font: 'Space Grotesk', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font);
+            background: var(--off-white);
+            color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 24px 48px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(23,17,12,0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        }
+
+        .logo {
+            font-size: 1.125rem; font-weight: 600;
+            letter-spacing: 0.08em; text-transform: uppercase;
+        }
+
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a {
+            font-size: 0.8125rem; color: var(--text-secondary);
+            text-decoration: none; transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--text); }
+
+        /* Hero */
+        .hero {
+            height: 100vh; display: flex; align-items: flex-end;
+            padding: 0 48px 80px; position: relative; overflow: hidden;
+            background: var(--off-white);
+        }
+
+        .hero-image {
+            position: absolute; top: 0; right: 0;
+            width: 55%; height: 100%; overflow: hidden;
+        }
+
+        .hero-image img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        .hero-content {
+            position: relative; z-index: 1; max-width: 520px;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.6875rem; letter-spacing: 0.3em; text-transform: uppercase;
+            color: var(--accent); margin-bottom: 20px; font-weight: 500;
+        }
+
+        .hero-title {
+            font-size: clamp(3rem, 6vw, 5rem); font-weight: 300;
+            line-height: 1.05; letter-spacing: -0.03em; margin-bottom: 24px;
+        }
+
+        .hero-title strong { font-weight: 600; }
+
+        .hero-sub {
+            font-size: 1rem; color: var(--text-secondary); line-height: 1.7;
+            max-width: 380px; font-weight: 300; margin-bottom: 40px;
+        }
+
+        .hero-btn {
+            display: inline-flex; align-items: center; gap: 12px;
+            font-size: 0.875rem; font-weight: 500; color: var(--text);
+            text-decoration: none; padding: 14px 0; border-bottom: 2px solid var(--text);
+            transition: all 0.3s;
+        }
+        .hero-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* Projects Marquee */
+        .marquee {
+            padding: 20px 0; border-top: 1px solid var(--warm-gray);
+            border-bottom: 1px solid var(--warm-gray);
+            overflow: hidden; white-space: nowrap;
+        }
+
+        .marquee-inner {
+            display: inline-flex; gap: 64px;
+            animation: marqueeScroll 20s linear infinite;
+        }
+
+        .marquee-item {
+            font-size: 0.75rem; letter-spacing: 0.2em;
+            text-transform: uppercase; color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        @keyframes marqueeScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        /* Projects Grid */
+        .projects {
+            padding: 120px 48px;
+            max-width: 1200px; margin: 0 auto;
+        }
+
+        .projects-header {
+            display: flex; justify-content: space-between; align-items: flex-end;
+            margin-bottom: 64px;
+        }
+
+        .projects-header h2 {
+            font-size: clamp(2rem, 3.5vw, 3rem); font-weight: 300;
+            line-height: 1.1; letter-spacing: -0.02em;
+        }
+
+        .projects-header h2 strong { font-weight: 600; }
+
+        .projects-header span {
+            font-size: 0.8125rem; color: var(--text-secondary);
+        }
+
+        .project-grid {
+            display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 24px;
+        }
+
+        .project-card {
+            position: relative; overflow: hidden; cursor: pointer;
+        }
+
+        .project-card img {
+            width: 100%; aspect-ratio: 4/3; object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25,0.1,0.25,1);
+        }
+
+        .project-card:first-child img { aspect-ratio: 3/4; }
+
+        .project-card:hover img { transform: scale(1.04); }
+
+        .project-card-info {
+            padding: 20px 0;
+        }
+
+        .project-card-info h3 {
+            font-size: 1.125rem; font-weight: 500; margin-bottom: 4px;
+        }
+
+        .project-card-info span {
+            font-size: 0.8125rem; color: var(--text-secondary); font-weight: 300;
+        }
+
+        /* Philosophy Band */
+        .band {
+            padding: 100px 48px; background: #1e1710;
+            color: var(--white); text-align: center;
+        }
+
+        .band-quote {
+            font-size: clamp(1.5rem, 3vw, 2.25rem); font-weight: 300;
+            line-height: 1.4; max-width: 700px; margin: 0 auto;
+            letter-spacing: -0.01em;
+        }
+
+        .band-quote strong { font-weight: 600; color: var(--accent); }
+
+        .band-author {
+            margin-top: 24px; font-size: 0.8125rem;
+            color: rgba(232,228,222,0.4); letter-spacing: 0.1em;
+        }
+
+        /* Awards */
+        .awards {
+            padding: 100px 48px; max-width: 1000px; margin: 0 auto;
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 40px;
+            text-align: center;
+        }
+
+        .award-num {
+            font-size: 2.5rem; font-weight: 600; color: var(--accent);
+            line-height: 1; margin-bottom: 8px;
+        }
+
+        .award-label {
+            font-size: 0.75rem; color: var(--text-secondary);
+            letter-spacing: 0.1em; text-transform: uppercase;
+        }
+
+        /* Contact */
+        .contact {
+            padding: 100px 48px; text-align: center;
+            border-top: 1px solid var(--warm-gray);
+        }
+
+        .contact h2 {
+            font-size: clamp(2rem, 4vw, 3rem); font-weight: 300;
+            margin-bottom: 12px; letter-spacing: -0.02em;
+        }
+
+        .contact p {
+            font-size: 0.9375rem; color: var(--text-secondary);
+            margin-bottom: 32px;
+        }
+
+        .contact-btn {
+            display: inline-block; padding: 14px 40px;
+            font-size: 0.875rem; font-weight: 500; color: #141413;
+            background: var(--white); text-decoration: none;
+            transition: all 0.3s;
+        }
+        .contact-btn:hover { background: var(--accent); }
+
+        /* Footer */
+        footer {
+            padding: 40px 48px; display: flex;
+            justify-content: space-between; align-items: center;
+        }
+
+        footer p { font-size: 0.75rem; color: var(--text-secondary); }
+
+        @media (max-width: 768px) {
+            nav { padding: 16px 24px; }
+            .nav-links { display: none; }
+            .hero { padding: 0 24px 60px; align-items: center; }
+            .hero-image { width: 100%; opacity: 0.3; }
+            .project-grid { grid-template-columns: 1fr; }
+            .awards { grid-template-columns: repeat(2, 1fr); }
+            .projects, .band, .contact, .awards { padding-left: 24px; padding-right: 24px; }
+            footer { flex-direction: column; gap: 8px; padding: 32px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">Nordic</div>
+        <div class="nav-links">
+            <a href="#projects">Projekte</a>
+            <a href="#philosophy">Philosophie</a>
+            <a href="#contact">Kontakt</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1486718448742-163732cd1544?auto=format&fit=crop&w=1400&q=80" alt="Architecture">
+        </div>
+        <div class="hero-content">
+            <p class="hero-eyebrow">Architektur &middot; Design &middot; Vision</p>
+            <h1 class="hero-title">Räume, die <strong>atmen.</strong></h1>
+            <p class="hero-sub">Wir gestalten Architektur, die Mensch und Natur in Einklang bringt.</p>
+            <a href="#projects" class="hero-btn">Projekte entdecken &rarr;</a>
+        </div>
+    </section>
+
+    <div class="marquee">
+        <div class="marquee-inner">
+            <span class="marquee-item">Residential</span>
+            <span class="marquee-item">Commercial</span>
+            <span class="marquee-item">Cultural</span>
+            <span class="marquee-item">Landscape</span>
+            <span class="marquee-item">Interior</span>
+            <span class="marquee-item">Urban Planning</span>
+            <span class="marquee-item">Residential</span>
+            <span class="marquee-item">Commercial</span>
+            <span class="marquee-item">Cultural</span>
+            <span class="marquee-item">Landscape</span>
+            <span class="marquee-item">Interior</span>
+            <span class="marquee-item">Urban Planning</span>
+        </div>
+    </div>
+
+    <section class="projects" id="projects">
+        <div class="projects-header">
+            <h2>Ausgewählte<br><strong>Projekte</strong></h2>
+            <span>2019 – 2026</span>
+        </div>
+        <div class="project-grid">
+            <div class="project-card">
+                <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=80" alt="Villa Strandhaus" loading="lazy">
+                <div class="project-card-info">
+                    <h3>Villa Strandhaus</h3>
+                    <span>Sylt, Deutschland &middot; 2024</span>
+                </div>
+            </div>
+            <div>
+                <div class="project-card" style="margin-bottom: 24px;">
+                    <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80" alt="Kulturhaus Nord" loading="lazy">
+                    <div class="project-card-info">
+                        <h3>Kulturhaus Nord</h3>
+                        <span>Kopenhagen &middot; 2023</span>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?auto=format&fit=crop&w=800&q=80" alt="Loft Atelier" loading="lazy">
+                    <div class="project-card-info">
+                        <h3>Loft Atelier</h3>
+                        <span>Berlin &middot; 2025</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="band" id="philosophy">
+        <p class="band-quote">„Gute Architektur verschwindet. Sie wird Teil des <strong>Lebens</strong>, das in ihr stattfindet."</p>
+        <p class="band-author">— Erik Lindström, Gründer</p>
+    </section>
+
+    <section class="awards">
+        <div><div class="award-num">47</div><div class="award-label">Projekte</div></div>
+        <div><div class="award-num">12</div><div class="award-label">Awards</div></div>
+        <div><div class="award-num">8</div><div class="award-label">Länder</div></div>
+        <div><div class="award-num">15</div><div class="award-label">Jahre</div></div>
+    </section>
+
+    <section class="contact" id="contact">
+        <h2>Nächstes Projekt?</h2>
+        <p>Lassen Sie uns gemeinsam etwas Besonderes schaffen.</p>
+        <a href="#" class="contact-btn">Kontakt aufnehmen</a>
+    </section>
+
+    <footer>
+        <div class="logo">Nordic</div>
+        <p>&copy; 2026 Nordic Architecture Studio</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumière Restaurant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --gold: #c9a96e;
+            --gold-light: #e2c992;
+            --dark: #0c0a08;
+            --dark-warm: #1a1612;
+            --cream: #f5efe6;
+            --text: #e8e0d4;
+            --text-dim: #8a7e6f;
+            --serif: 'Playfair Display', Georgia, serif;
+            --sans: 'Inter', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--dark);
+            color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 24px 48px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: linear-gradient(180deg, rgba(12,10,8,0.9) 0%, transparent 100%);
+        }
+
+        .logo {
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            color: var(--gold);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+        }
+
+        .nav-links { display: flex; gap: 32px; }
+        .nav-links a {
+            font-size: 0.8125rem; color: var(--text-dim);
+            text-decoration: none; letter-spacing: 0.1em;
+            text-transform: uppercase; transition: color 0.3s;
+        }
+        .nav-links a:hover { color: var(--gold); }
+
+        .nav-cta {
+            font-size: 0.8125rem; color: var(--gold); text-decoration: none;
+            padding: 10px 24px; border: 1px solid rgba(201,169,110,0.4);
+            letter-spacing: 0.1em; text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        .nav-cta:hover { background: var(--gold); color: var(--dark); }
+
+        /* Hero */
+        .hero {
+            height: 100vh; position: relative;
+            display: flex; align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute; inset: 0;
+            background: url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+        }
+
+        .hero-overlay {
+            position: absolute; inset: 0;
+            background: linear-gradient(180deg, rgba(12,10,8,0.4) 0%, rgba(12,10,8,0.7) 60%, rgba(12,10,8,0.95) 100%);
+        }
+
+        .hero-content {
+            position: relative; z-index: 1; text-align: center;
+            max-width: 700px; padding: 0 24px;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.75rem; letter-spacing: 0.3em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-family: var(--serif); font-size: clamp(3rem, 7vw, 5.5rem);
+            font-weight: 400; line-height: 1.05; color: var(--cream);
+            margin-bottom: 20px;
+        }
+
+        .hero-title em { font-style: italic; color: var(--gold); }
+
+        .hero-sub {
+            font-size: 1rem; color: var(--text-dim); line-height: 1.7;
+            max-width: 400px; margin: 0 auto 40px; font-weight: 300;
+        }
+
+        .hero-btn {
+            display: inline-block; padding: 14px 40px;
+            font-size: 0.8125rem; letter-spacing: 0.15em; text-transform: uppercase;
+            color: var(--dark); background: var(--gold);
+            text-decoration: none; transition: all 0.4s;
+        }
+        .hero-btn:hover { background: var(--gold-light); transform: translateY(-2px); }
+
+        .scroll-hint {
+            position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+            display: flex; flex-direction: column; align-items: center; gap: 8px;
+            color: var(--text-dim); font-size: 0.625rem; letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+        .scroll-hint::after {
+            content: ''; width: 1px; height: 40px;
+            background: linear-gradient(to bottom, var(--gold), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        @keyframes scrollPulse {
+            0%, 100% { opacity: 0.3; } 50% { opacity: 1; }
+        }
+
+        /* Philosophy Section */
+        .philosophy {
+            padding: 140px 48px;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+            max-width: 1100px; margin: 0 auto; align-items: center;
+        }
+
+        .phil-text .eyebrow {
+            font-size: 0.6875rem; letter-spacing: 0.25em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 20px;
+        }
+
+        .phil-text h2 {
+            font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 2.75rem);
+            font-weight: 400; line-height: 1.2; color: var(--cream);
+            margin-bottom: 24px;
+        }
+
+        .phil-text p {
+            font-size: 0.9375rem; color: var(--text-dim); line-height: 1.8;
+            font-weight: 300;
+        }
+
+        .phil-image {
+            position: relative; overflow: hidden;
+        }
+
+        .phil-image img {
+            width: 100%; aspect-ratio: 3/4; object-fit: cover;
+            filter: brightness(0.9) contrast(1.05);
+        }
+
+        .phil-image::after {
+            content: ''; position: absolute; inset: 0;
+            border: 1px solid rgba(201,169,110,0.2);
+            pointer-events: none;
+        }
+
+        /* Menu Highlights */
+        .menu-section {
+            padding: 120px 48px;
+            background: var(--dark-warm);
+            text-align: center;
+        }
+
+        .menu-section .eyebrow {
+            font-size: 0.6875rem; letter-spacing: 0.25em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 16px;
+        }
+
+        .menu-section h2 {
+            font-family: var(--serif); font-size: clamp(2rem, 3.5vw, 2.75rem);
+            font-weight: 400; color: var(--cream); margin-bottom: 64px;
+        }
+
+        .menu-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px;
+            max-width: 1000px; margin: 0 auto;
+        }
+
+        .menu-card {
+            position: relative; overflow: hidden; cursor: pointer;
+        }
+
+        .menu-card img {
+            width: 100%; aspect-ratio: 1; object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25,0.1,0.25,1);
+            filter: brightness(0.85);
+        }
+
+        .menu-card:hover img { transform: scale(1.06); }
+
+        .menu-card-info {
+            position: absolute; bottom: 0; left: 0; right: 0;
+            padding: 32px 24px 24px;
+            background: linear-gradient(to top, rgba(12,10,8,0.9) 0%, transparent 100%);
+        }
+
+        .menu-card-info h3 {
+            font-family: var(--serif); font-size: 1.25rem; font-weight: 400;
+            color: var(--cream); margin-bottom: 4px;
+        }
+
+        .menu-card-info span {
+            font-size: 0.8125rem; color: var(--gold); font-weight: 300;
+        }
+
+        /* Ambiance */
+        .ambiance {
+            height: 70vh; position: relative; overflow: hidden;
+        }
+
+        .ambiance img {
+            width: 100%; height: 100%; object-fit: cover;
+            filter: brightness(0.7);
+        }
+
+        .ambiance-overlay {
+            position: absolute; inset: 0;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        .ambiance-quote {
+            font-family: var(--serif); font-size: clamp(1.5rem, 3vw, 2.25rem);
+            font-weight: 400; font-style: italic; color: var(--cream);
+            max-width: 600px; text-align: center; line-height: 1.4;
+            padding: 0 24px;
+        }
+
+        /* Reservation */
+        .reservation {
+            padding: 120px 48px; text-align: center;
+            background: var(--dark);
+        }
+
+        .reservation .eyebrow {
+            font-size: 0.6875rem; letter-spacing: 0.25em; text-transform: uppercase;
+            color: var(--gold); margin-bottom: 16px;
+        }
+
+        .reservation h2 {
+            font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 400; color: var(--cream); margin-bottom: 16px;
+        }
+
+        .reservation p {
+            font-size: 0.9375rem; color: var(--text-dim); margin-bottom: 40px;
+            font-weight: 300;
+        }
+
+        .res-form {
+            display: flex; gap: 12px; max-width: 500px; margin: 0 auto;
+            flex-wrap: wrap; justify-content: center;
+        }
+
+        .res-form input {
+            padding: 14px 20px; background: rgba(201,169,110,0.06);
+            border: 1px solid rgba(201,169,110,0.2); color: var(--text);
+            font-family: var(--sans); font-size: 0.875rem;
+            outline: none; flex: 1; min-width: 180px;
+            transition: border-color 0.3s;
+        }
+
+        .res-form input::placeholder { color: var(--text-dim); }
+        .res-form input:focus { border-color: var(--gold); }
+
+        .res-form button {
+            padding: 14px 32px; background: var(--gold); color: var(--dark);
+            border: none; font-family: var(--sans); font-size: 0.8125rem;
+            letter-spacing: 0.15em; text-transform: uppercase; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .res-form button:hover { background: var(--gold-light); }
+
+        /* Footer */
+        footer {
+            padding: 60px 48px; border-top: 1px solid rgba(201,169,110,0.1);
+            display: flex; justify-content: space-between; align-items: center;
+            max-width: 1100px; margin: 0 auto;
+        }
+
+        footer .logo { font-size: 1.125rem; }
+
+        footer p {
+            font-size: 0.75rem; color: var(--text-dim); letter-spacing: 0.05em;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            nav { padding: 16px 24px; }
+            .nav-links { display: none; }
+            .philosophy { grid-template-columns: 1fr; padding: 80px 24px; gap: 48px; }
+            .menu-grid { grid-template-columns: 1fr; max-width: 400px; }
+            .menu-section, .reservation { padding: 80px 24px; }
+            footer { flex-direction: column; gap: 16px; text-align: center; padding: 40px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">Lumiere</div>
+        <div class="nav-links">
+            <a href="#philosophy">Philosophie</a>
+            <a href="#menu">Karte</a>
+            <a href="#ambiance">Ambiente</a>
+        </div>
+        <a href="#reservation" class="nav-cta">Reservieren</a>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="hero-eyebrow">Fine Dining seit 2018</p>
+            <h1 class="hero-title">Wo Licht auf <em>Geschmack</em> trifft.</h1>
+            <p class="hero-sub">Eine kulinarische Reise durch saisonale Aromen und zeitlose Eleganz.</p>
+            <a href="#reservation" class="hero-btn">Tisch reservieren</a>
+        </div>
+        <div class="scroll-hint">Entdecken</div>
+    </section>
+
+    <section class="philosophy" id="philosophy">
+        <div class="phil-text">
+            <p class="eyebrow">Unsere Philosophie</p>
+            <h2>Jedes Gericht erzählt eine Geschichte.</h2>
+            <p>Wir glauben an die Kraft saisonaler Zutaten, meisterhafter Zubereitung und der perfekten Atmosphäre. Lumière ist mehr als ein Restaurant – es ist ein Erlebnis für alle Sinne.</p>
+        </div>
+        <div class="phil-image">
+            <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2?auto=format&fit=crop&w=800&q=80" alt="Chef at work" loading="lazy">
+        </div>
+    </section>
+
+    <section class="menu-section" id="menu">
+        <p class="eyebrow">Highlights</p>
+        <h2>Aus unserer Karte</h2>
+        <div class="menu-grid">
+            <div class="menu-card">
+                <img src="https://images.unsplash.com/photo-1546039907-7fa05f864c02?auto=format&fit=crop&w=600&q=80" alt="Vorspeise" loading="lazy">
+                <div class="menu-card-info">
+                    <h3>Tatar vom Rind</h3>
+                    <span>Trüffel &middot; Eigelb &middot; Brioche</span>
+                </div>
+            </div>
+            <div class="menu-card">
+                <img src="https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=600&q=80" alt="Hauptgericht" loading="lazy">
+                <div class="menu-card-info">
+                    <h3>Wagyu Filet</h3>
+                    <span>Jus &middot; Sellerie &middot; Morcheln</span>
+                </div>
+            </div>
+            <div class="menu-card">
+                <img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?auto=format&fit=crop&w=600&q=80" alt="Dessert" loading="lazy">
+                <div class="menu-card-info">
+                    <h3>Valrhona Soufflé</h3>
+                    <span>Schokolade &middot; Vanille &middot; Gold</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="ambiance" id="ambiance">
+        <img src="https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=2000&q=80" alt="Restaurant Interior" loading="lazy">
+        <div class="ambiance-overlay">
+            <p class="ambiance-quote">„Ein Abend bei Lumière ist wie ein Gespräch mit einem alten Freund – warm, ehrlich und unvergesslich."</p>
+        </div>
+    </section>
+
+    <section class="reservation" id="reservation">
+        <p class="eyebrow">Reservierung</p>
+        <h2>Ihr Tisch wartet.</h2>
+        <p>Reservieren Sie Ihren Abend bei Lumière.</p>
+        <div class="res-form">
+            <input type="text" placeholder="Name">
+            <input type="email" placeholder="E-Mail">
+            <input type="date" placeholder="Datum">
+            <button>Reservieren</button>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo">Lumiere</div>
+        <p>&copy; 2026 Lumière Restaurant. Alle Rechte vorbehalten.</p>
+    </footer>
+</body>
+</html>

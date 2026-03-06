@@ -1,0 +1,1324 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinFlow Analytics</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #09090b;
+            --bg-card: #111113;
+            --bg-elevated: #18181b;
+            --bg-subtle: #0f0f12;
+            --text: #fafafa;
+            --text-dim: #a1a1aa;
+            --text-muted: #52525b;
+            --blue: #6366f1;
+            --cyan: #818cf8;
+            --green: #22c55e;
+            --violet: #8b5cf6;
+            --amber: #f59e0b;
+            --red: #ef4444;
+            --gradient: linear-gradient(135deg, #4338ca, #818cf8);
+            --gradient-v: linear-gradient(135deg, #6366f1, #a78bfa);
+            --border: rgba(255,255,255,0.06);
+            --border-hover: rgba(255,255,255,0.12);
+            --font: 'Inter', -apple-system, sans-serif;
+            --mono: 'JetBrains Mono', monospace;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--font); background: var(--bg);
+            color: var(--text); overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* === Animated Grid Background === */
+        .grid-bg {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background-image:
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 64px 64px;
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 70%);
+            -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 30%, black 20%, transparent 70%);
+        }
+
+        /* === Nav === */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 14px 48px;
+            display: flex; align-items: center; justify-content: space-between;
+            background: rgba(9,9,11,0.8);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            font-size: 1.125rem; font-weight: 800;
+            background: var(--gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; letter-spacing: -0.02em;
+        }
+
+        .nav-center { display: flex; gap: 6px; background: var(--bg-card); border-radius: 10px; padding: 4px; border: 1px solid var(--border); }
+        .nav-center a {
+            font-size: 0.8125rem; color: var(--text-dim); text-decoration: none;
+            padding: 6px 16px; border-radius: 7px; transition: all 0.25s; font-weight: 500;
+        }
+        .nav-center a:hover { color: var(--text); background: var(--bg-elevated); }
+        .nav-center a.active { color: var(--text); background: var(--bg-elevated); }
+
+        .nav-right { display: flex; align-items: center; gap: 16px; }
+        .nav-login { font-size: 0.8125rem; color: var(--text-dim); text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        .nav-login:hover { color: var(--text); }
+        .nav-cta {
+            font-size: 0.8125rem; color: white; text-decoration: none;
+            padding: 8px 20px; background: var(--gradient);
+            border-radius: 8px; font-weight: 600; transition: all 0.3s;
+        }
+        .nav-cta:hover { box-shadow: 0 4px 20px rgba(99,102,241,0.3); transform: translateY(-1px); }
+
+        /* === Hero === */
+        .hero {
+            min-height: 100vh; display: flex; align-items: center;
+            padding: 120px 48px 80px; position: relative; overflow: hidden;
+        }
+
+        .hero-glow {
+            position: absolute; top: -300px; left: 50%; transform: translateX(-50%);
+            width: 1000px; height: 800px;
+            background: radial-gradient(ellipse, rgba(99,102,241,0.15) 0%, rgba(129,140,248,0.08) 30%, rgba(99,102,241,0.04) 50%, transparent 70%);
+            pointer-events: none; animation: glowPulse 8s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+            50% { opacity: 0.8; transform: translateX(-50%) scale(1.05); }
+        }
+
+        .hero-content {
+            position: relative; z-index: 1;
+            max-width: 1200px; margin: 0 auto; width: 100%;
+            display: grid; grid-template-columns: 1fr 1.15fr; gap: 72px;
+            align-items: center;
+        }
+
+        .hero-text { max-width: 500px; }
+
+        .hero-badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 16px 6px 8px; border-radius: 100px;
+            background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);
+            font-size: 0.75rem; color: var(--green); font-weight: 500;
+            margin-bottom: 28px; font-family: var(--mono);
+        }
+
+        .hero-badge .pulse {
+            width: 8px; height: 8px; border-radius: 50%;
+            background: var(--green); position: relative;
+        }
+        .hero-badge .pulse::after {
+            content: ''; position: absolute; inset: -3px; border-radius: 50%;
+            background: var(--green); opacity: 0; animation: pulseDot 2s ease-out infinite;
+        }
+        @keyframes pulseDot {
+            0% { transform: scale(1); opacity: 0.6; }
+            100% { transform: scale(2.2); opacity: 0; }
+        }
+
+        .hero-title {
+            font-size: clamp(2.75rem, 5vw, 4rem); font-weight: 900;
+            line-height: 1.05; letter-spacing: -0.04em; margin-bottom: 20px;
+        }
+
+        .hero-title span {
+            background: var(--gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-sub {
+            font-size: 1.0625rem; color: var(--text-dim); line-height: 1.7;
+            margin-bottom: 36px; font-weight: 400;
+        }
+
+        .hero-btns { display: flex; gap: 12px; margin-bottom: 48px; }
+
+        .btn-primary {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 13px 26px; background: var(--gradient); color: white;
+            border-radius: 10px; font-size: 0.875rem; font-weight: 600;
+            text-decoration: none; transition: all 0.3s; border: none; cursor: pointer;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(99,102,241,0.3); }
+
+        .btn-ghost {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 13px 26px; border: 1px solid var(--border);
+            border-radius: 10px; font-size: 0.875rem; color: var(--text-dim);
+            text-decoration: none; transition: all 0.3s; font-weight: 500;
+        }
+        .btn-ghost:hover { border-color: var(--border-hover); color: var(--text); }
+
+        .hero-proof {
+            display: flex; align-items: center; gap: 16px;
+        }
+
+        .hero-avatars {
+            display: flex;
+        }
+        .hero-avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            border: 2px solid var(--bg); margin-left: -8px;
+            background: var(--bg-elevated);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.625rem; font-weight: 600; color: var(--text-dim);
+        }
+        .hero-avatar:first-child { margin-left: 0; }
+        .hero-avatar.blue { background: linear-gradient(135deg, #6366f1, #4f46e5); color: white; }
+        .hero-avatar.cyan { background: linear-gradient(135deg, #818cf8, #6366f1); color: white; }
+        .hero-avatar.violet { background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; }
+        .hero-avatar.green { background: linear-gradient(135deg, #22c55e, #16a34a); color: white; }
+
+        .hero-proof-text { font-size: 0.8125rem; color: var(--text-muted); line-height: 1.4; }
+        .hero-proof-text strong { color: var(--text-dim); font-weight: 600; }
+
+        /* === Dashboard Preview (Enhanced) === */
+        .dash-preview {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; position: relative;
+            box-shadow: 0 25px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.03);
+            overflow: hidden;
+        }
+
+        .dash-titlebar {
+            display: flex; align-items: center; gap: 8px;
+            padding: 12px 16px; background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .dash-dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dash-dot.r { background: #ef4444; }
+        .dash-dot.y { background: #f59e0b; }
+        .dash-dot.g { background: #22c55e; }
+
+        .dash-titlebar-text {
+            flex: 1; text-align: center; font-size: 0.6875rem;
+            color: var(--text-muted); font-family: var(--mono);
+        }
+
+        .dash-body { padding: 20px; }
+
+        .dash-topbar {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px;
+        }
+        .dash-topbar-left { display: flex; align-items: center; gap: 12px; }
+        .dash-topbar h3 { font-size: 0.8125rem; font-weight: 600; }
+        .dash-topbar-tag {
+            font-size: 0.625rem; padding: 3px 8px; border-radius: 6px;
+            background: rgba(34,197,94,0.1); color: var(--green);
+            font-family: var(--mono); font-weight: 500;
+        }
+        .dash-topbar-right {
+            display: flex; gap: 6px;
+        }
+        .dash-tab {
+            font-size: 0.6875rem; padding: 5px 12px; border-radius: 6px;
+            color: var(--text-muted); font-weight: 500; cursor: default;
+        }
+        .dash-tab.active { background: var(--bg); color: var(--text-dim); }
+
+        .dash-stats {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .dash-stat {
+            padding: 14px; background: var(--bg);
+            border-radius: 10px; border: 1px solid var(--border);
+        }
+
+        .dash-stat-label {
+            font-size: 0.625rem; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 6px;
+            font-family: var(--mono);
+        }
+
+        .dash-stat-value {
+            font-size: 1.25rem; font-weight: 700; letter-spacing: -0.02em;
+            font-family: var(--mono);
+        }
+
+        .dash-stat-change {
+            font-size: 0.625rem; font-weight: 600; margin-top: 4px;
+            font-family: var(--mono);
+        }
+        .dash-stat-change.up { color: var(--green); }
+        .dash-stat-change.down { color: var(--red); }
+
+        .dash-grid { display: grid; grid-template-columns: 1.4fr 0.6fr; gap: 10px; }
+
+        /* Chart */
+        .dash-chart {
+            background: var(--bg); border-radius: 10px;
+            border: 1px solid var(--border); padding: 16px;
+        }
+        .dash-chart-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px;
+        }
+        .dash-chart-title { font-size: 0.6875rem; font-weight: 600; }
+        .dash-chart-value {
+            font-size: 0.75rem; font-family: var(--mono);
+            color: var(--green); font-weight: 600;
+        }
+        .chart-wrap { height: 100px; position: relative; }
+        .chart-svg { width: 100%; height: 100%; }
+        .chart-path { fill: none; stroke: url(#chartGrad); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .chart-area { fill: url(#areaGrad); }
+
+        /* Side panel: Donut + List */
+        .dash-side { display: flex; flex-direction: column; gap: 10px; }
+
+        .dash-donut-card {
+            background: var(--bg); border-radius: 10px;
+            border: 1px solid var(--border); padding: 14px;
+            flex: 1;
+        }
+        .dash-donut-title {
+            font-size: 0.6875rem; font-weight: 600; margin-bottom: 10px;
+        }
+        .donut-wrap {
+            display: flex; align-items: center; gap: 12px;
+        }
+        .donut-svg { width: 64px; height: 64px; flex-shrink: 0; }
+        .donut-labels { display: flex; flex-direction: column; gap: 4px; }
+        .donut-label {
+            display: flex; align-items: center; gap: 6px;
+            font-size: 0.625rem; color: var(--text-dim);
+        }
+        .donut-color {
+            width: 6px; height: 6px; border-radius: 2px; flex-shrink: 0;
+        }
+
+        .dash-activity {
+            background: var(--bg); border-radius: 10px;
+            border: 1px solid var(--border); padding: 14px;
+        }
+        .dash-activity-title {
+            font-size: 0.6875rem; font-weight: 600; margin-bottom: 10px;
+        }
+        .activity-item {
+            display: flex; align-items: center; gap: 8px;
+            padding: 6px 0; border-bottom: 1px solid var(--border);
+        }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+        .activity-text { font-size: 0.625rem; color: var(--text-dim); flex: 1; }
+        .activity-time { font-size: 0.5625rem; color: var(--text-muted); font-family: var(--mono); }
+
+        /* === Ticker Band === */
+        .ticker {
+            border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+            padding: 20px 0; overflow: hidden; position: relative; z-index: 1;
+            background: var(--bg-subtle);
+        }
+        .ticker-track {
+            display: flex; gap: 48px; animation: tickerScroll 30s linear infinite;
+            width: max-content;
+        }
+        .ticker-item {
+            display: flex; align-items: center; gap: 12px;
+            font-size: 0.8125rem; font-weight: 500; white-space: nowrap;
+            color: var(--text-dim);
+        }
+        .ticker-item .name { color: var(--text-muted); font-weight: 400; }
+        .ticker-item .val { font-family: var(--mono); font-weight: 600; }
+        .ticker-item .chg { font-family: var(--mono); font-size: 0.75rem; font-weight: 600; }
+        .ticker-item .chg.up { color: var(--green); }
+        .ticker-item .chg.down { color: var(--red); }
+        .ticker-sep { width: 4px; height: 4px; border-radius: 50%; background: var(--text-muted); opacity: 0.3; flex-shrink: 0; }
+
+        @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+        /* === Bento Features === */
+        .bento {
+            padding: 120px 48px; max-width: 1200px; margin: 0 auto;
+            position: relative; z-index: 1;
+        }
+
+        .section-label {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 0.75rem; font-family: var(--mono); color: var(--blue);
+            text-transform: uppercase; letter-spacing: 0.08em; font-weight: 500;
+            margin-bottom: 16px;
+        }
+        .section-label::before {
+            content: ''; width: 20px; height: 1px; background: var(--blue);
+        }
+
+        .section-title {
+            font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 800;
+            letter-spacing: -0.03em; margin-bottom: 12px; line-height: 1.1;
+        }
+        .section-sub {
+            font-size: 1rem; color: var(--text-dim); max-width: 460px;
+            margin-bottom: 56px; line-height: 1.65;
+        }
+
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: auto auto;
+            gap: 14px;
+        }
+
+        .bento-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; padding: 32px; position: relative;
+            overflow: hidden; transition: border-color 0.4s;
+        }
+        .bento-card:hover { border-color: var(--border-hover); }
+
+        .bento-card.wide { grid-column: span 2; }
+        .bento-card.tall { grid-row: span 2; }
+
+        .bento-icon {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 20px;
+        }
+        .bento-icon svg { width: 20px; height: 20px; stroke-width: 1.5; }
+
+        .bento-icon.blue { background: rgba(99,102,241,0.1); }
+        .bento-icon.blue svg { stroke: var(--blue); fill: none; }
+        .bento-icon.cyan { background: rgba(129,140,248,0.1); }
+        .bento-icon.cyan svg { stroke: var(--cyan); fill: none; }
+        .bento-icon.violet { background: rgba(99,102,241,0.1); }
+        .bento-icon.violet svg { stroke: var(--violet); fill: none; }
+        .bento-icon.green { background: rgba(34,197,94,0.1); }
+        .bento-icon.green svg { stroke: var(--green); fill: none; }
+        .bento-icon.amber { background: rgba(245,158,11,0.1); }
+        .bento-icon.amber svg { stroke: var(--amber); fill: none; }
+
+        .bento-title { font-size: 1rem; font-weight: 600; margin-bottom: 8px; }
+        .bento-desc { font-size: 0.875rem; color: var(--text-dim); line-height: 1.6; }
+
+        /* Bento card visual flourishes */
+        .bento-visual {
+            margin-top: 24px; padding: 16px; background: var(--bg);
+            border-radius: 10px; border: 1px solid var(--border);
+        }
+
+        .mini-bars { display: flex; gap: 4px; align-items: flex-end; height: 48px; }
+        .mini-bar {
+            flex: 1; border-radius: 3px 3px 0 0;
+            background: var(--gradient); opacity: 0.7; min-width: 8px;
+        }
+
+        .mini-lines { display: flex; flex-direction: column; gap: 8px; }
+        .mini-line {
+            height: 8px; border-radius: 4px; background: var(--bg-elevated);
+        }
+        .mini-line.accent { background: var(--gradient); opacity: 0.6; }
+
+        .mini-code {
+            font-family: var(--mono); font-size: 0.6875rem;
+            color: var(--text-dim); line-height: 1.8;
+        }
+        .mini-code .kw { color: var(--violet); }
+        .mini-code .fn { color: var(--blue); }
+        .mini-code .str { color: var(--green); }
+        .mini-code .cm { color: var(--text-muted); }
+
+        /* === Metrics Showcase === */
+        .metrics {
+            padding: 100px 48px; position: relative; z-index: 1;
+            background: var(--bg-subtle);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .metrics-inner { max-width: 1200px; margin: 0 auto; }
+        .metrics-grid {
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+        }
+        .metric-card {
+            text-align: center; padding: 40px 24px;
+            background: var(--bg-card); border-radius: 16px;
+            border: 1px solid var(--border);
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .metric-card:hover { border-color: var(--border-hover); transform: translateY(-4px); }
+
+        .metric-number {
+            font-size: clamp(2rem, 3.5vw, 2.75rem); font-weight: 800;
+            letter-spacing: -0.03em; margin-bottom: 4px;
+            font-family: var(--mono);
+        }
+        .metric-number.grad {
+            background: var(--gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .metric-unit {
+            font-size: 0.8125rem; color: var(--text-dim); font-weight: 500;
+        }
+
+        /* === Product Showcase (Split) === */
+        .showcase {
+            padding: 120px 48px; max-width: 1200px; margin: 0 auto;
+            position: relative; z-index: 1;
+        }
+        .showcase-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+            align-items: center;
+        }
+        .showcase-grid.reverse { direction: ltr; }
+        .showcase-grid.reverse .showcase-visual { order: -1; }
+
+        .showcase-text .section-sub { margin-bottom: 32px; }
+
+        .showcase-features { display: flex; flex-direction: column; gap: 16px; }
+        .showcase-feature {
+            display: flex; gap: 14px; align-items: flex-start;
+        }
+        .showcase-feature-dot {
+            width: 8px; height: 8px; border-radius: 50%; margin-top: 6px;
+            flex-shrink: 0;
+        }
+        .showcase-feature-text h4 {
+            font-size: 0.875rem; font-weight: 600; margin-bottom: 2px;
+        }
+        .showcase-feature-text p {
+            font-size: 0.8125rem; color: var(--text-dim); line-height: 1.55;
+        }
+
+        .showcase-visual {
+            background: var(--bg-card); border-radius: 16px;
+            border: 1px solid var(--border); overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .showcase-ui-header {
+            padding: 12px 16px; background: var(--bg-elevated);
+            border-bottom: 1px solid var(--border);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .sui-tab {
+            font-size: 0.6875rem; padding: 4px 12px; border-radius: 6px;
+            color: var(--text-muted);
+        }
+        .sui-tab.active { background: var(--bg); color: var(--text-dim); }
+
+        .showcase-ui-body { padding: 20px; }
+
+        /* Mini table inside showcase */
+        .mini-table { width: 100%; border-collapse: collapse; }
+        .mini-table th {
+            font-size: 0.625rem; color: var(--text-muted); text-transform: uppercase;
+            letter-spacing: 0.06em; text-align: left; padding: 8px 10px;
+            border-bottom: 1px solid var(--border); font-family: var(--mono);
+        }
+        .mini-table td {
+            font-size: 0.75rem; padding: 10px; border-bottom: 1px solid var(--border);
+            color: var(--text-dim);
+        }
+        .mini-table td.name-cell { font-weight: 500; color: var(--text); display: flex; align-items: center; gap: 8px; }
+        .mini-table td.mono { font-family: var(--mono); font-weight: 600; }
+        .coin-icon {
+            width: 20px; height: 20px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.5rem; font-weight: 700; color: white; flex-shrink: 0;
+        }
+
+        /* Mini spark line */
+        .spark-svg { width: 60px; height: 24px; }
+        .spark-line { fill: none; stroke-width: 1.5; stroke-linecap: round; }
+
+        /* === Integrations === */
+        .integrations {
+            padding: 100px 48px; position: relative; z-index: 1;
+            background: var(--bg-subtle);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+        .integrations-inner {
+            max-width: 1200px; margin: 0 auto; text-align: center;
+        }
+        .integrations-inner .section-label,
+        .integrations-inner .section-title,
+        .integrations-inner .section-sub { text-align: center; }
+        .integrations-inner .section-sub { margin-left: auto; margin-right: auto; }
+
+        .int-grid {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 14px;
+            max-width: 800px; margin: 0 auto;
+        }
+        .int-card {
+            padding: 24px 16px; background: var(--bg-card);
+            border: 1px solid var(--border); border-radius: 14px;
+            display: flex; flex-direction: column; align-items: center; gap: 10px;
+            transition: border-color 0.3s, transform 0.3s;
+        }
+        .int-card:hover { border-color: var(--border-hover); transform: translateY(-3px); }
+        .int-icon {
+            width: 36px; height: 36px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 0.875rem; color: white;
+        }
+        .int-name { font-size: 0.6875rem; color: var(--text-dim); font-weight: 500; }
+
+        /* === Testimonial === */
+        .testimonial-section {
+            padding: 120px 48px; max-width: 900px; margin: 0 auto;
+            position: relative; z-index: 1; text-align: center;
+        }
+        .testi-quote {
+            font-size: clamp(1.25rem, 2.5vw, 1.625rem); font-weight: 400;
+            line-height: 1.65; color: var(--text-dim); margin-bottom: 32px;
+            font-style: italic;
+        }
+        .testi-quote strong { color: var(--text); font-weight: 500; font-style: normal; }
+
+        .testi-author {
+            display: flex; align-items: center; gap: 14px;
+            justify-content: center;
+        }
+        .testi-avatar {
+            width: 44px; height: 44px; border-radius: 50%;
+            background: var(--gradient); display: flex;
+            align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.875rem;
+        }
+        .testi-info h4 { font-size: 0.875rem; font-weight: 600; }
+        .testi-info p { font-size: 0.8125rem; color: var(--text-muted); }
+
+        .testi-stars { margin-bottom: 24px; display: flex; justify-content: center; gap: 4px; }
+        .testi-star { color: var(--amber); font-size: 1.125rem; }
+
+        /* === CTA === */
+        .cta-section {
+            padding: 140px 48px; text-align: center; position: relative;
+            z-index: 1; overflow: hidden;
+        }
+
+        .cta-glow {
+            position: absolute; bottom: -200px; left: 50%; transform: translateX(-50%);
+            width: 900px; height: 500px;
+            background: radial-gradient(ellipse, rgba(99,102,241,0.1) 0%, rgba(99,102,241,0.06) 40%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .cta-section h2 {
+            font-size: clamp(2.5rem, 4.5vw, 3.5rem); font-weight: 800;
+            letter-spacing: -0.03em; margin-bottom: 16px; line-height: 1.1;
+            position: relative;
+        }
+
+        .cta-section h2 span {
+            background: var(--gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+
+        .cta-section p {
+            font-size: 1.0625rem; color: var(--text-dim); margin-bottom: 36px;
+            position: relative;
+        }
+
+        .cta-btns {
+            display: flex; gap: 12px; justify-content: center; position: relative;
+            margin-bottom: 24px;
+        }
+
+        .cta-note {
+            font-size: 0.75rem; color: var(--text-muted);
+            display: flex; align-items: center; gap: 6px;
+            justify-content: center; position: relative;
+        }
+
+        /* === Footer === */
+        footer {
+            padding: 48px; border-top: 1px solid var(--border);
+            position: relative; z-index: 1;
+        }
+        .footer-inner {
+            max-width: 1200px; margin: 0 auto;
+            display: grid; grid-template-columns: 1.5fr repeat(3, 1fr); gap: 40px;
+        }
+        .footer-brand { }
+        .footer-brand .logo { margin-bottom: 12px; }
+        .footer-brand p { font-size: 0.8125rem; color: var(--text-muted); line-height: 1.6; max-width: 260px; }
+        .footer-col h4 {
+            font-size: 0.6875rem; color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: 0.08em;
+            margin-bottom: 16px; font-weight: 600;
+        }
+        .footer-col a {
+            display: block; font-size: 0.8125rem; color: var(--text-dim);
+            text-decoration: none; margin-bottom: 10px; transition: color 0.2s;
+        }
+        .footer-col a:hover { color: var(--text); }
+        .footer-bottom {
+            max-width: 1200px; margin: 32px auto 0;
+            padding-top: 24px; border-top: 1px solid var(--border);
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .footer-bottom p { font-size: 0.75rem; color: var(--text-muted); }
+
+        /* === Responsive === */
+        @media (max-width: 1024px) {
+            .bento-grid { grid-template-columns: 1fr 1fr; }
+            .bento-card.wide { grid-column: span 2; }
+            .int-grid { grid-template-columns: repeat(3, 1fr); }
+            .metrics-grid { grid-template-columns: repeat(2, 1fr); }
+            .showcase-grid { grid-template-columns: 1fr; gap: 48px; }
+            .showcase-grid.reverse .showcase-visual { order: 0; }
+            .footer-inner { grid-template-columns: 1fr 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            nav { padding: 12px 20px; }
+            .nav-center { display: none; }
+            .hero { padding: 100px 24px 60px; }
+            .hero-content { grid-template-columns: 1fr; gap: 40px; }
+            .dash-stats { grid-template-columns: repeat(2, 1fr); }
+            .dash-grid { grid-template-columns: 1fr; }
+            .bento-grid { grid-template-columns: 1fr; }
+            .bento-card.wide { grid-column: span 1; }
+            .metrics-grid { grid-template-columns: 1fr 1fr; }
+            .int-grid { grid-template-columns: repeat(2, 1fr); }
+            .bento, .showcase, .testimonial-section, .cta-section,
+            .metrics, .integrations { padding-left: 24px; padding-right: 24px; }
+            footer { padding: 32px 24px; }
+            .footer-inner { grid-template-columns: 1fr; gap: 32px; }
+        }
+
+        @media (max-width: 480px) {
+            .dash-stats { grid-template-columns: 1fr; }
+            .metrics-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-bg"></div>
+
+    <nav>
+        <div class="logo">FinFlow</div>
+        <div class="nav-center">
+            <a href="#features" class="active">Features</a>
+            <a href="#showcase">Produkt</a>
+            <a href="#integrations">Integrationen</a>
+            <a href="#">Docs</a>
+        </div>
+        <div class="nav-right">
+            <a href="#" class="nav-login">Anmelden</a>
+            <a href="#" class="nav-cta">Kostenlos starten</a>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+            <div class="hero-text">
+                <div class="hero-badge">
+                    <span class="pulse"></span>
+                    Live · v2.4 · 99.99% Uptime
+                </div>
+                <h1 class="hero-title">Deine Finanzen.<br><span>Kristallklar.</span></h1>
+                <p class="hero-sub">Echtzeit-Analytics, die komplexe Finanzdaten in klare Entscheidungen verwandeln. Für Teams, die schneller handeln wollen.</p>
+                <div class="hero-btns">
+                    <a href="#" class="btn-primary">
+                        Kostenlos starten
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </a>
+                    <a href="#" class="btn-ghost">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                        Demo ansehen
+                    </a>
+                </div>
+                <div class="hero-proof">
+                    <div class="hero-avatars">
+                        <div class="hero-avatar blue">TK</div>
+                        <div class="hero-avatar cyan">LM</div>
+                        <div class="hero-avatar violet">SH</div>
+                        <div class="hero-avatar green">+</div>
+                    </div>
+                    <div class="hero-proof-text">
+                        <strong>2.400+ Teams</strong> vertrauen<br>bereits auf FinFlow
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Preview -->
+            <div class="dash-preview">
+                <div class="dash-titlebar">
+                    <span class="dash-dot r"></span>
+                    <span class="dash-dot y"></span>
+                    <span class="dash-dot g"></span>
+                    <span class="dash-titlebar-text">app.finflow.io/dashboard</span>
+                </div>
+                <div class="dash-body">
+                    <div class="dash-topbar">
+                        <div class="dash-topbar-left">
+                            <h3>Portfolio Overview</h3>
+                            <span class="dash-topbar-tag">● Live</span>
+                        </div>
+                        <div class="dash-topbar-right">
+                            <span class="dash-tab active">1W</span>
+                            <span class="dash-tab">1M</span>
+                            <span class="dash-tab">1Y</span>
+                            <span class="dash-tab">All</span>
+                        </div>
+                    </div>
+                    <div class="dash-stats">
+                        <div class="dash-stat">
+                            <div class="dash-stat-label">Rendite</div>
+                            <div class="dash-stat-value">24.8%</div>
+                            <div class="dash-stat-change up">▲ 3.2%</div>
+                        </div>
+                        <div class="dash-stat">
+                            <div class="dash-stat-label">Assets</div>
+                            <div class="dash-stat-value">€847K</div>
+                            <div class="dash-stat-change up">▲ 12.5%</div>
+                        </div>
+                        <div class="dash-stat">
+                            <div class="dash-stat-label">Volatilität</div>
+                            <div class="dash-stat-value">8.3%</div>
+                            <div class="dash-stat-change down">▼ 1.2%</div>
+                        </div>
+                        <div class="dash-stat">
+                            <div class="dash-stat-label">Sharpe</div>
+                            <div class="dash-stat-value">1.84</div>
+                            <div class="dash-stat-change up">▲ 0.3</div>
+                        </div>
+                    </div>
+                    <div class="dash-grid">
+                        <div class="dash-chart">
+                            <div class="dash-chart-header">
+                                <span class="dash-chart-title">Portfolio Performance</span>
+                                <span class="dash-chart-value">+24.8% YTD</span>
+                            </div>
+                            <div class="chart-wrap">
+                                <svg class="chart-svg" viewBox="0 0 400 90" preserveAspectRatio="none">
+                                    <defs>
+                                        <linearGradient id="chartGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                            <stop offset="0%" stop-color="#4338ca"/>
+                                            <stop offset="50%" stop-color="#6366f1"/>
+                                            <stop offset="100%" stop-color="#a78bfa"/>
+                                        </linearGradient>
+                                        <linearGradient id="areaGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" stop-color="#4338ca" stop-opacity="0.2"/>
+                                            <stop offset="100%" stop-color="#4338ca" stop-opacity="0"/>
+                                        </linearGradient>
+                                    </defs>
+                                    <path class="chart-area" d="M0,70 C30,65 60,55 90,58 C120,61 150,45 180,40 C210,35 240,42 270,35 C300,28 330,32 360,20 C380,14 400,10 400,10 L400,90 L0,90 Z"/>
+                                    <path class="chart-path" d="M0,70 C30,65 60,55 90,58 C120,61 150,45 180,40 C210,35 240,42 270,35 C300,28 330,32 360,20 C380,14 400,10 400,10"/>
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="dash-side">
+                            <div class="dash-donut-card">
+                                <div class="dash-donut-title">Allocation</div>
+                                <div class="donut-wrap">
+                                    <svg class="donut-svg" viewBox="0 0 36 36">
+                                        <circle cx="18" cy="18" r="14" fill="none" stroke="var(--border)" stroke-width="3"/>
+                                        <circle cx="18" cy="18" r="14" fill="none" stroke="#6366f1" stroke-width="3"
+                                                stroke-dasharray="38 50" stroke-dashoffset="25" stroke-linecap="round"/>
+                                        <circle cx="18" cy="18" r="14" fill="none" stroke="#818cf8" stroke-width="3"
+                                                stroke-dasharray="22 66" stroke-dashoffset="-13" stroke-linecap="round"/>
+                                        <circle cx="18" cy="18" r="14" fill="none" stroke="#22c55e" stroke-width="3"
+                                                stroke-dasharray="14 74" stroke-dashoffset="-35" stroke-linecap="round"/>
+                                        <circle cx="18" cy="18" r="14" fill="none" stroke="#8b5cf6" stroke-width="3"
+                                                stroke-dasharray="10 78" stroke-dashoffset="-49" stroke-linecap="round"/>
+                                    </svg>
+                                    <div class="donut-labels">
+                                        <div class="donut-label"><span class="donut-color" style="background:#6366f1"></span> Aktien 43%</div>
+                                        <div class="donut-label"><span class="donut-color" style="background:#818cf8"></span> Bonds 25%</div>
+                                        <div class="donut-label"><span class="donut-color" style="background:#22c55e"></span> ETFs 16%</div>
+                                        <div class="donut-label"><span class="donut-color" style="background:#8b5cf6"></span> Crypto 11%</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="dash-activity">
+                                <div class="dash-activity-title">Letzte Aktivität</div>
+                                <div class="activity-item">
+                                    <span class="activity-dot" style="background:var(--green)"></span>
+                                    <span class="activity-text">AAPL +50 Stk.</span>
+                                    <span class="activity-time">2m</span>
+                                </div>
+                                <div class="activity-item">
+                                    <span class="activity-dot" style="background:var(--red)"></span>
+                                    <span class="activity-text">BTC -0.5</span>
+                                    <span class="activity-time">8m</span>
+                                </div>
+                                <div class="activity-item">
+                                    <span class="activity-dot" style="background:var(--blue)"></span>
+                                    <span class="activity-text">Alert: TSLA ▲5%</span>
+                                    <span class="activity-time">15m</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TICKER BAND ===== -->
+    <section class="ticker">
+        <div class="ticker-track">
+            <span class="ticker-item"><span class="name">AAPL</span> <span class="val">$189.24</span> <span class="chg up">+2.4%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">MSFT</span> <span class="val">$412.67</span> <span class="chg up">+1.8%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">TSLA</span> <span class="val">$267.30</span> <span class="chg up">+5.1%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">BTC</span> <span class="val">$67,420</span> <span class="chg down">-0.8%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">ETH</span> <span class="val">$3,240</span> <span class="chg up">+3.2%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">DAX</span> <span class="val">18,492</span> <span class="chg up">+0.7%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">S&P 500</span> <span class="val">5,234</span> <span class="chg up">+1.2%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">NVDA</span> <span class="val">$891.20</span> <span class="chg up">+4.3%</span></span>
+            <span class="ticker-sep"></span>
+            <!-- Duplicate for seamless loop -->
+            <span class="ticker-item"><span class="name">AAPL</span> <span class="val">$189.24</span> <span class="chg up">+2.4%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">MSFT</span> <span class="val">$412.67</span> <span class="chg up">+1.8%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">TSLA</span> <span class="val">$267.30</span> <span class="chg up">+5.1%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">BTC</span> <span class="val">$67,420</span> <span class="chg down">-0.8%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">ETH</span> <span class="val">$3,240</span> <span class="chg up">+3.2%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">DAX</span> <span class="val">18,492</span> <span class="chg up">+0.7%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">S&P 500</span> <span class="val">5,234</span> <span class="chg up">+1.2%</span></span>
+            <span class="ticker-sep"></span>
+            <span class="ticker-item"><span class="name">NVDA</span> <span class="val">$891.20</span> <span class="chg up">+4.3%</span></span>
+        </div>
+    </section>
+
+    <!-- ===== BENTO FEATURES ===== -->
+    <section class="bento" id="features">
+        <div class="section-label">Features</div>
+        <h2 class="section-title">Alles, was du brauchst.</h2>
+        <p class="section-sub">Leistungsstarke Tools für smarte Finanzentscheidungen — gebaut für Geschwindigkeit und Präzision.</p>
+
+        <div class="bento-grid">
+            <!-- Card 1: Wide - Echtzeit Tracking -->
+            <div class="bento-card wide">
+                <div class="bento-icon blue">
+                    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                </div>
+                <h3 class="bento-title">Echtzeit Tracking</h3>
+                <p class="bento-desc">Live-Updates deiner Assets mit millisekunden-genauer Präzision. WebSocket-basierte Datenströme für sofortige Reaktionsfähigkeit.</p>
+                <div class="bento-visual">
+                    <div class="mini-bars">
+                        <div class="mini-bar" style="height:35%"></div>
+                        <div class="mini-bar" style="height:55%"></div>
+                        <div class="mini-bar" style="height:42%"></div>
+                        <div class="mini-bar" style="height:68%"></div>
+                        <div class="mini-bar" style="height:52%"></div>
+                        <div class="mini-bar" style="height:78%"></div>
+                        <div class="mini-bar" style="height:60%"></div>
+                        <div class="mini-bar" style="height:85%"></div>
+                        <div class="mini-bar" style="height:72%"></div>
+                        <div class="mini-bar" style="height:90%"></div>
+                        <div class="mini-bar" style="height:65%"></div>
+                        <div class="mini-bar" style="height:95%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2: Normal - Smart Dashboards -->
+            <div class="bento-card">
+                <div class="bento-icon cyan">
+                    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                </div>
+                <h3 class="bento-title">Smart Dashboards</h3>
+                <p class="bento-desc">Individuell konfigurierbare Dashboards für jeden Anwendungsfall.</p>
+                <div class="bento-visual">
+                    <div class="mini-lines">
+                        <div class="mini-line accent" style="width:80%"></div>
+                        <div class="mini-line" style="width:100%"></div>
+                        <div class="mini-line accent" style="width:55%"></div>
+                        <div class="mini-line" style="width:70%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3: Normal - Security -->
+            <div class="bento-card">
+                <div class="bento-icon green">
+                    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                </div>
+                <h3 class="bento-title">Bank-Level Security</h3>
+                <p class="bento-desc">256-bit Verschlüsselung und SOC2 Type II zertifiziert.</p>
+                <div class="bento-visual">
+                    <div class="mini-code">
+                        <span class="cm">// encryption.ts</span><br>
+                        <span class="kw">const</span> cipher = <span class="fn">encrypt</span>(<br>
+                        &nbsp;&nbsp;data, <span class="str">"AES-256-GCM"</span><br>
+                        );
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Normal - AI Insights -->
+            <div class="bento-card">
+                <div class="bento-icon violet">
+                    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                </div>
+                <h3 class="bento-title">KI-Insights</h3>
+                <p class="bento-desc">Machine-Learning-Modelle analysieren Muster und liefern Handlungsempfehlungen.</p>
+            </div>
+
+            <!-- Card 5: Wide - API First -->
+            <div class="bento-card wide">
+                <div class="bento-icon amber">
+                    <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M16 18l6-6-6-6"/><path d="M8 6l-6 6 6 6"/></svg>
+                </div>
+                <h3 class="bento-title">API-First Architektur</h3>
+                <p class="bento-desc">RESTful & GraphQL APIs für nahtlose Integration in bestehende Systeme. Webhooks, SDKs und umfangreiche Dokumentation inklusive.</p>
+                <div class="bento-visual">
+                    <div class="mini-code">
+                        <span class="kw">const</span> portfolio = <span class="kw">await</span> <span class="fn">finflow</span>.<span class="fn">getPortfolio</span>({<br>
+                        &nbsp;&nbsp;period: <span class="str">"1Y"</span>,<br>
+                        &nbsp;&nbsp;metrics: [<span class="str">"sharpe"</span>, <span class="str">"volatility"</span>, <span class="str">"returns"</span>]<br>
+                        });
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== METRICS ===== -->
+    <section class="metrics">
+        <div class="metrics-inner">
+            <div class="metrics-grid">
+                <div class="metric-card">
+                    <div class="metric-number grad">2.4K+</div>
+                    <div class="metric-unit">Aktive Teams</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number grad">€4.2B</div>
+                    <div class="metric-unit">Assets tracked</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number grad">&lt;50ms</div>
+                    <div class="metric-unit">Latenz (P99)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-number grad">99.99%</div>
+                    <div class="metric-unit">Uptime SLA</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SHOWCASE 1: Portfolio Tracker ===== -->
+    <section class="showcase" id="showcase">
+        <div class="showcase-grid">
+            <div class="showcase-text">
+                <div class="section-label">Produkt</div>
+                <h2 class="section-title">Dein Portfolio.<br>In Echtzeit.</h2>
+                <p class="section-sub">Behalte den Überblick über alle deine Assets — Aktien, ETFs, Crypto und mehr — in einem einzigen, leistungsstarken Dashboard.</p>
+                <div class="showcase-features">
+                    <div class="showcase-feature">
+                        <span class="showcase-feature-dot" style="background:var(--blue)"></span>
+                        <div class="showcase-feature-text">
+                            <h4>Multi-Asset Tracking</h4>
+                            <p>Aktien, Crypto, ETFs, Anleihen — alles auf einen Blick.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-feature">
+                        <span class="showcase-feature-dot" style="background:var(--green)"></span>
+                        <div class="showcase-feature-text">
+                            <h4>Smart Alerts</h4>
+                            <p>Benutzerdefinierte Benachrichtigungen bei Kursveränderungen.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-feature">
+                        <span class="showcase-feature-dot" style="background:var(--violet)"></span>
+                        <div class="showcase-feature-text">
+                            <h4>KI-Prognosen</h4>
+                            <p>ML-gestützte Trendanalysen für bessere Entscheidungen.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="showcase-visual">
+                <div class="showcase-ui-header">
+                    <span class="sui-tab active">Watchlist</span>
+                    <span class="sui-tab">Holdings</span>
+                    <span class="sui-tab">Alerts</span>
+                </div>
+                <div class="showcase-ui-body">
+                    <table class="mini-table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th>Kurs</th>
+                                <th>24h</th>
+                                <th>Trend</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="name-cell">
+                                    <span class="coin-icon" style="background:#6366f1">A</span>
+                                    AAPL
+                                </td>
+                                <td class="mono">$189.24</td>
+                                <td class="mono" style="color:var(--green)">+2.4%</td>
+                                <td>
+                                    <svg class="spark-svg" viewBox="0 0 60 24">
+                                        <polyline class="spark-line" stroke="#22c55e" points="0,18 10,15 20,12 30,14 40,8 50,6 60,4"/>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="name-cell">
+                                    <span class="coin-icon" style="background:#f59e0b">B</span>
+                                    BTC
+                                </td>
+                                <td class="mono">$67,420</td>
+                                <td class="mono" style="color:var(--red)">-0.8%</td>
+                                <td>
+                                    <svg class="spark-svg" viewBox="0 0 60 24">
+                                        <polyline class="spark-line" stroke="#ef4444" points="0,8 10,10 20,6 30,12 40,14 50,16 60,18"/>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="name-cell">
+                                    <span class="coin-icon" style="background:#8b5cf6">E</span>
+                                    ETH
+                                </td>
+                                <td class="mono">$3,240</td>
+                                <td class="mono" style="color:var(--green)">+3.2%</td>
+                                <td>
+                                    <svg class="spark-svg" viewBox="0 0 60 24">
+                                        <polyline class="spark-line" stroke="#22c55e" points="0,16 10,18 20,14 30,10 40,12 50,6 60,4"/>
+                                    </svg>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="name-cell">
+                                    <span class="coin-icon" style="background:#818cf8">N</span>
+                                    NVDA
+                                </td>
+                                <td class="mono">$891.20</td>
+                                <td class="mono" style="color:var(--green)">+4.3%</td>
+                                <td>
+                                    <svg class="spark-svg" viewBox="0 0 60 24">
+                                        <polyline class="spark-line" stroke="#22c55e" points="0,20 10,16 20,18 30,12 40,8 50,6 60,2"/>
+                                    </svg>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== SHOWCASE 2: Analytics (Reversed) ===== -->
+    <section class="showcase" style="padding-top:40px;">
+        <div class="showcase-grid reverse">
+            <div class="showcase-text">
+                <div class="section-label">Analytics</div>
+                <h2 class="section-title">Daten, die<br>sprechen.</h2>
+                <p class="section-sub">Verstehe die Performance deines Portfolios bis ins kleinste Detail. Von Sharpe Ratio bis Drawdown-Analyse.</p>
+                <div class="showcase-features">
+                    <div class="showcase-feature">
+                        <span class="showcase-feature-dot" style="background:var(--cyan)"></span>
+                        <div class="showcase-feature-text">
+                            <h4>Risikoanalyse</h4>
+                            <p>Value-at-Risk, Maximum Drawdown und Beta-Berechnung.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-feature">
+                        <span class="showcase-feature-dot" style="background:var(--amber)"></span>
+                        <div class="showcase-feature-text">
+                            <h4>Benchmark-Vergleich</h4>
+                            <p>Vergleiche Performance gegen DAX, S&P 500 oder Custom Indizes.</p>
+                        </div>
+                    </div>
+                    <div class="showcase-feature">
+                        <span class="showcase-feature-dot" style="background:var(--blue)"></span>
+                        <div class="showcase-feature-text">
+                            <h4>Export & Reports</h4>
+                            <p>PDF-Reports, CSV-Export und automatisierte Monatsberichte.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="showcase-visual">
+                <div class="showcase-ui-header">
+                    <span class="sui-tab active">Analyse</span>
+                    <span class="sui-tab">Risiko</span>
+                    <span class="sui-tab">Reports</span>
+                </div>
+                <div class="showcase-ui-body">
+                    <div style="margin-bottom:16px;">
+                        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:8px;">
+                            <span style="font-size:0.6875rem; font-weight:600;">Performance vs. Benchmark</span>
+                            <span style="font-size:0.625rem; color:var(--text-muted); font-family:var(--mono);">YTD</span>
+                        </div>
+                        <svg viewBox="0 0 360 100" style="width:100%; height:100px;">
+                            <defs>
+                                <linearGradient id="perfGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#4338ca"/>
+                                    <stop offset="100%" stop-color="#818cf8"/>
+                                </linearGradient>
+                            </defs>
+                            <!-- Benchmark (gray) -->
+                            <path d="M0,65 C40,60 80,55 120,52 C160,49 200,50 240,45 C280,40 320,38 360,35" fill="none" stroke="var(--text-muted)" stroke-width="1.5" stroke-dasharray="4 4" opacity="0.5"/>
+                            <!-- Portfolio (gradient) -->
+                            <path d="M0,70 C40,62 80,50 120,48 C160,46 200,38 240,30 C280,22 320,18 360,12" fill="none" stroke="url(#perfGrad)" stroke-width="2" stroke-linecap="round"/>
+                            <!-- Labels -->
+                            <text x="350" y="30" fill="var(--blue)" font-size="7" font-family="var(--mono)" text-anchor="end">Portfolio</text>
+                            <text x="350" y="50" fill="var(--text-muted)" font-size="7" font-family="var(--mono)" text-anchor="end">S&P 500</text>
+                        </svg>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;">
+                        <div style="background:var(--bg); border-radius:8px; padding:12px; border:1px solid var(--border);">
+                            <div style="font-size:0.5625rem; color:var(--text-muted); text-transform:uppercase; font-family:var(--mono); letter-spacing:0.05em; margin-bottom:4px;">Sharpe Ratio</div>
+                            <div style="font-size:1rem; font-weight:700; font-family:var(--mono);">1.84</div>
+                        </div>
+                        <div style="background:var(--bg); border-radius:8px; padding:12px; border:1px solid var(--border);">
+                            <div style="font-size:0.5625rem; color:var(--text-muted); text-transform:uppercase; font-family:var(--mono); letter-spacing:0.05em; margin-bottom:4px;">Max Drawdown</div>
+                            <div style="font-size:1rem; font-weight:700; font-family:var(--mono); color:var(--red);">-8.3%</div>
+                        </div>
+                        <div style="background:var(--bg); border-radius:8px; padding:12px; border:1px solid var(--border);">
+                            <div style="font-size:0.5625rem; color:var(--text-muted); text-transform:uppercase; font-family:var(--mono); letter-spacing:0.05em; margin-bottom:4px;">Alpha</div>
+                            <div style="font-size:1rem; font-weight:700; font-family:var(--mono); color:var(--green);">+6.2%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== INTEGRATIONS ===== -->
+    <section class="integrations" id="integrations">
+        <div class="integrations-inner">
+            <div class="section-label">Integrationen</div>
+            <h2 class="section-title">Verbunden mit allem.</h2>
+            <p class="section-sub">Nahtlose Anbindung an die Tools, die du bereits nutzt.</p>
+
+            <div class="int-grid">
+                <div class="int-card">
+                    <div class="int-icon" style="background:linear-gradient(135deg,#4285f4,#34a853)">G</div>
+                    <div class="int-name">Google Sheets</div>
+                </div>
+                <div class="int-card">
+                    <div class="int-icon" style="background:linear-gradient(135deg,#611f69,#e01e5a)">S</div>
+                    <div class="int-name">Slack</div>
+                </div>
+                <div class="int-card">
+                    <div class="int-icon" style="background:linear-gradient(135deg,#0052cc,#2684ff)">J</div>
+                    <div class="int-name">Jira</div>
+                </div>
+                <div class="int-card">
+                    <div class="int-icon" style="background:linear-gradient(135deg,#ff6c37,#ff4500)">Z</div>
+                    <div class="int-name">Zapier</div>
+                </div>
+                <div class="int-card">
+                    <div class="int-icon" style="background:linear-gradient(135deg,#00d4aa,#00b894)">P</div>
+                    <div class="int-name">Plaid</div>
+                </div>
+                <div class="int-card">
+                    <div class="int-icon" style="background:linear-gradient(135deg,#635bff,#7a73ff)">St</div>
+                    <div class="int-name">Stripe</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIAL ===== -->
+    <section class="testimonial-section">
+        <div class="testi-stars">
+            <span class="testi-star">★</span>
+            <span class="testi-star">★</span>
+            <span class="testi-star">★</span>
+            <span class="testi-star">★</span>
+            <span class="testi-star">★</span>
+        </div>
+        <p class="testi-quote">&bdquo;FinFlow hat die Art verändert, wie wir Finanzdaten verstehen. <strong>Die Echtzeit-Dashboards sparen uns jeden Tag Stunden</strong> und die KI-Insights haben uns geholfen, Risiken frühzeitig zu erkennen.&ldquo;</p>
+        <div class="testi-author">
+            <div class="testi-avatar">MK</div>
+            <div class="testi-info">
+                <h4>Markus Klein</h4>
+                <p>CFO, TechScale GmbH</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA ===== -->
+    <section class="cta-section">
+        <div class="cta-glow"></div>
+        <h2>Bereit für<br><span>klare Sicht?</span></h2>
+        <p>Starte kostenlos. Keine Kreditkarte nötig. Setup in unter 3 Minuten.</p>
+        <div class="cta-btns">
+            <a href="#" class="btn-primary">
+                Jetzt starten
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </a>
+            <a href="#" class="btn-ghost">Kontakt aufnehmen</a>
+        </div>
+        <p class="cta-note">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            SOC2 Type II zertifiziert · DSGVO-konform · ISO 27001
+        </p>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-inner">
+            <div class="footer-brand">
+                <div class="logo">FinFlow</div>
+                <p>Echtzeit-Analytics für smarte Finanzentscheidungen. Gebaut in Deutschland.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Produkt</h4>
+                <a href="#">Features</a>
+                <a href="#">Pricing</a>
+                <a href="#">Changelog</a>
+                <a href="#">Roadmap</a>
+            </div>
+            <div class="footer-col">
+                <h4>Ressourcen</h4>
+                <a href="#">Dokumentation</a>
+                <a href="#">API Reference</a>
+                <a href="#">Blog</a>
+                <a href="#">Status</a>
+            </div>
+            <div class="footer-col">
+                <h4>Unternehmen</h4>
+                <a href="#">Über uns</a>
+                <a href="#">Karriere</a>
+                <a href="#">Datenschutz</a>
+                <a href="#">Impressum</a>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 FinFlow Analytics GmbH</p>
+            <p>Made with precision in Frankfurt am Main</p>
+        </div>
+    </footer>
+</body>
+</html>

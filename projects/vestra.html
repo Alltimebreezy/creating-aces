@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vestra Fashion</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --black: #0a0a0a;
+            --white: #fafafa;
+            --cream: #f0ece4;
+            --text-dark: #1a1a1a;
+            --text-muted: #888;
+            --sans: 'DM Sans', sans-serif;
+            --serif: 'DM Serif Display', serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--sans);
+            background: var(--cream);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Nav */
+        nav {
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 20px 48px;
+            display: flex; align-items: center; justify-content: space-between;
+            mix-blend-mode: difference;
+        }
+
+        .logo {
+            font-family: var(--serif); font-size: 1.5rem; color: var(--white);
+            letter-spacing: 0.02em;
+        }
+
+        .nav-links { display: flex; gap: 28px; }
+        .nav-links a {
+            font-size: 0.8125rem; color: var(--white);
+            text-decoration: none; transition: opacity 0.3s;
+        }
+        .nav-links a:hover { opacity: 0.6; }
+
+        /* Hero – Editorial Split */
+        .hero {
+            min-height: 100vh; display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .hero-left {
+            background: var(--black); display: flex;
+            flex-direction: column; justify-content: center;
+            padding: 80px 64px;
+        }
+
+        .hero-eyebrow {
+            font-size: 0.6875rem; letter-spacing: 0.3em;
+            text-transform: uppercase; color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .hero-title {
+            font-family: var(--serif); font-size: clamp(3rem, 5.5vw, 5rem);
+            font-weight: 400; line-height: 1.0; color: var(--white);
+            margin-bottom: 24px;
+        }
+
+        .hero-title em { font-style: italic; }
+
+        .hero-sub {
+            font-size: 0.9375rem; color: var(--text-muted); line-height: 1.7;
+            max-width: 340px; font-weight: 300; margin-bottom: 40px;
+        }
+
+        .hero-btn {
+            display: inline-flex; align-items: center; gap: 12px;
+            padding: 14px 36px; background: var(--white); color: var(--black);
+            text-decoration: none; font-size: 0.8125rem; font-weight: 500;
+            letter-spacing: 0.1em; text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        .hero-btn:hover { background: var(--cream); }
+
+        .hero-right {
+            position: relative; overflow: hidden;
+        }
+
+        .hero-right img {
+            width: 100%; height: 100%; object-fit: cover;
+        }
+
+        /* Editorial Strip */
+        .strip {
+            display: flex; overflow: hidden;
+            border-top: 1px solid rgba(0,0,0,0.1);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .strip-item {
+            flex: 1; position: relative; overflow: hidden;
+            min-height: 500px;
+        }
+
+        .strip-item img {
+            width: 100%; height: 100%; object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25,0.1,0.25,1);
+        }
+
+        .strip-item:hover img { transform: scale(1.05); }
+
+        .strip-label {
+            position: absolute; bottom: 24px; left: 24px;
+            font-size: 0.75rem; letter-spacing: 0.2em;
+            text-transform: uppercase; color: white;
+            background: rgba(0,0,0,0.4); padding: 8px 16px;
+            backdrop-filter: blur(10px);
+        }
+
+        /* Statement */
+        .statement {
+            padding: 140px 48px; text-align: center;
+            background: var(--black); color: var(--white);
+        }
+
+        .statement h2 {
+            font-family: var(--serif); font-size: clamp(2.5rem, 5vw, 4rem);
+            font-weight: 400; line-height: 1.1; max-width: 700px;
+            margin: 0 auto 24px;
+        }
+
+        .statement h2 em { font-style: italic; color: var(--cream); }
+
+        .statement p {
+            font-size: 0.9375rem; color: var(--text-muted);
+            max-width: 420px; margin: 0 auto; line-height: 1.7;
+            font-weight: 300;
+        }
+
+        /* Collection Grid */
+        .collection {
+            padding: 100px 48px; max-width: 1200px; margin: 0 auto;
+        }
+
+        .collection-header {
+            display: flex; justify-content: space-between;
+            align-items: flex-end; margin-bottom: 48px;
+        }
+
+        .collection-header h2 {
+            font-family: var(--serif); font-size: 2.5rem;
+            font-weight: 400; letter-spacing: -0.01em;
+        }
+
+        .collection-header a {
+            font-size: 0.8125rem; color: var(--text-muted);
+            text-decoration: underline; text-underline-offset: 4px;
+        }
+
+        .collection-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+        }
+
+        .product {
+            position: relative; overflow: hidden; cursor: pointer;
+        }
+
+        .product img {
+            width: 100%; aspect-ratio: 3/4; object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .product:hover img { transform: scale(1.04); }
+
+        .product-info { padding: 16px 0; }
+
+        .product-name { font-size: 0.9375rem; font-weight: 500; margin-bottom: 4px; }
+
+        .product-price { font-size: 0.875rem; color: var(--text-muted); font-weight: 300; }
+
+        /* Newsletter */
+        .newsletter {
+            padding: 80px 48px; text-align: center;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .newsletter h3 {
+            font-family: var(--serif); font-size: 1.75rem;
+            font-weight: 400; margin-bottom: 12px;
+        }
+
+        .newsletter p {
+            font-size: 0.875rem; color: var(--text-muted); margin-bottom: 28px;
+        }
+
+        .nl-form {
+            display: flex; gap: 8px; max-width: 400px; margin: 0 auto;
+        }
+
+        .nl-form input {
+            flex: 1; padding: 12px 16px; border: 1px solid rgba(0,0,0,0.15);
+            background: transparent; font-family: var(--sans); font-size: 0.875rem;
+            outline: none; transition: border-color 0.3s;
+        }
+        .nl-form input:focus { border-color: var(--black); }
+
+        .nl-form button {
+            padding: 12px 24px; background: var(--black); color: var(--white);
+            border: none; font-family: var(--sans); font-size: 0.8125rem;
+            font-weight: 500; cursor: pointer; transition: opacity 0.3s;
+        }
+        .nl-form button:hover { opacity: 0.8; }
+
+        /* Footer */
+        footer {
+            padding: 40px 48px; display: flex;
+            justify-content: space-between; align-items: center;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+
+        footer .logo { font-size: 1.125rem; color: var(--text-dark); }
+        footer p { font-size: 0.75rem; color: var(--text-muted); }
+
+        @media (max-width: 768px) {
+            nav { padding: 16px 24px; }
+            .nav-links { display: none; }
+            .hero { grid-template-columns: 1fr; }
+            .hero-left { padding: 120px 24px 60px; }
+            .hero-right { height: 60vh; }
+            .strip { flex-direction: column; }
+            .strip-item { min-height: 300px; }
+            .collection-grid { grid-template-columns: repeat(2, 1fr); }
+            .collection, .statement, .newsletter { padding-left: 24px; padding-right: 24px; }
+            footer { flex-direction: column; gap: 8px; padding: 32px 24px; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="logo">Vestra</div>
+        <div class="nav-links">
+            <a href="#collection">Kollektion</a>
+            <a href="#about">Story</a>
+            <a href="#newsletter">Newsletter</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-left">
+            <p class="hero-eyebrow">Spring/Summer 2026</p>
+            <h1 class="hero-title">Reduziert.<br><em>Raffiniert.</em></h1>
+            <p class="hero-sub">Mode, die bleibt. Zeitlose Stücke aus nachhaltigen Materialien für den modernen Menschen.</p>
+            <a href="#collection" class="hero-btn">Shop entdecken</a>
+        </div>
+        <div class="hero-right">
+            <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=1200&q=80" alt="Fashion Editorial" loading="lazy">
+        </div>
+    </section>
+
+    <div class="strip">
+        <div class="strip-item">
+            <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?auto=format&fit=crop&w=800&q=80" alt="Lookbook 1" loading="lazy">
+            <span class="strip-label">Outerwear</span>
+        </div>
+        <div class="strip-item">
+            <img src="https://images.unsplash.com/photo-1509631179647-0177331693ae?auto=format&fit=crop&w=800&q=80" alt="Lookbook 2" loading="lazy">
+            <span class="strip-label">Essentials</span>
+        </div>
+        <div class="strip-item">
+            <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?auto=format&fit=crop&w=800&q=80" alt="Lookbook 3" loading="lazy">
+            <span class="strip-label">Accessories</span>
+        </div>
+    </div>
+
+    <section class="statement" id="about">
+        <h2>Mode sollte nicht schreien. Sie sollte <em>flüstern.</em></h2>
+        <p>Jedes Stück in unserer Kollektion wird mit Bedacht entworfen – für Menschen, die Qualität über Quantität stellen.</p>
+    </section>
+
+    <section class="collection" id="collection">
+        <div class="collection-header">
+            <h2>Neue Kollektion</h2>
+            <a href="#">Alle ansehen</a>
+        </div>
+        <div class="collection-grid">
+            <div class="product">
+                <img src="https://images.unsplash.com/photo-1434389677669-e08b4cda3a0b?auto=format&fit=crop&w=600&q=80" alt="Cashmere Coat" loading="lazy">
+                <div class="product-info">
+                    <p class="product-name">Cashmere Mantel</p>
+                    <p class="product-price">€ 890</p>
+                </div>
+            </div>
+            <div class="product">
+                <img src="https://images.unsplash.com/photo-1591047139829-d91aecb6caea?auto=format&fit=crop&w=600&q=80" alt="Linen Blazer" loading="lazy">
+                <div class="product-info">
+                    <p class="product-name">Leinen Blazer</p>
+                    <p class="product-price">€ 420</p>
+                </div>
+            </div>
+            <div class="product">
+                <img src="https://images.unsplash.com/photo-1560243563-062bfc001d68?auto=format&fit=crop&w=600&q=80" alt="Silk Dress" loading="lazy">
+                <div class="product-info">
+                    <p class="product-name">Seiden Kleid</p>
+                    <p class="product-price">€ 560</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="newsletter" id="newsletter">
+        <h3>Bleib verbunden</h3>
+        <p>Exklusive Einblicke & Early Access auf neue Kollektionen.</p>
+        <div class="nl-form">
+            <input type="email" placeholder="Deine E-Mail">
+            <button>Anmelden</button>
+        </div>
+    </section>
+
+    <footer>
+        <div class="logo">Vestra</div>
+        <p>&copy; 2026 Vestra Fashion. Alle Rechte vorbehalten.</p>
+    </footer>
+</body>
+</html>

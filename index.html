@@ -349,12 +349,80 @@
             border-color: rgba(255,243,230,0.20);
         }
 
-        /* Portfolio card hover */
-        .portfolio-visual {
-            transition: transform 0.6s ease;
+        /* Portfolio — Concept D: Minimal Grid + Live Hover Preview */
+        .pf-list { list-style: none; padding: 0; margin: 0; }
+        .pf-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 0;
+            border-bottom: 1px solid rgba(255,243,230,0.06);
+            text-decoration: none;
+            color: inherit;
+            position: relative;
+            transition: opacity 0.4s ease;
         }
-        .portfolio-card:hover .portfolio-visual {
-            transform: scale(1.03);
+        .pf-item:first-child { border-top: 1px solid rgba(255,243,230,0.06); }
+        .pf-list:hover .pf-item { opacity: 0.35; }
+        .pf-list:hover .pf-item:hover { opacity: 1; }
+        .pf-item__name {
+            font-size: clamp(1.25rem, 2.5vw, 2rem);
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            color: #FFF3E6;
+            transition: color 0.3s ease;
+        }
+        .pf-item:hover .pf-item__name { color: #d6c1a0; }
+        .pf-item__meta {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+        .pf-item__cat {
+            font-size: 13px;
+            color: #6D6050;
+            letter-spacing: 0.04em;
+            transition: color 0.3s ease;
+        }
+        .pf-item:hover .pf-item__cat { color: #9E9080; }
+        .pf-item__arrow {
+            font-size: 13px;
+            color: #4A4030;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        .pf-item:hover .pf-item__arrow { color: #d6c1a0; transform: translateX(4px); }
+        /* Floating preview */
+        .pf-preview {
+            position: fixed;
+            pointer-events: none;
+            z-index: 50;
+            width: 380px;
+            height: 240px;
+            border-radius: 12px;
+            overflow: hidden;
+            opacity: 0;
+            transform: scale(0.92);
+            transition: opacity 0.35s cubic-bezier(0.25,0.46,0.45,0.94), transform 0.35s cubic-bezier(0.25,0.46,0.45,0.94);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,243,230,0.06);
+            will-change: transform, opacity;
+        }
+        .pf-preview.active { opacity: 1; transform: scale(1); }
+        .pf-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        /* Mobile: show inline previews instead of hover */
+        @media (max-width: 768px) {
+            .pf-preview { display: none !important; }
+            .pf-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+                padding: 20px 0;
+            }
+            .pf-item__meta { width: 100%; justify-content: space-between; }
+            .pf-item__name { font-size: 1.25rem; }
         }
 
         /* Form inputs */
@@ -455,17 +523,17 @@
         }
         .k6-bullet {
             position: relative;
-            padding-left: 14px;
+            padding-left: 16px;
         }
         .k6-bullet::before {
             content: '';
             position: absolute;
             left: 0;
-            top: 7px;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: rgba(214,193,160,0.25);
+            top: 11px;
+            width: 10px;
+            height: 1px;
+            border-radius: 0;
+            background: rgba(214,193,160,0.22);
         }
 
         /* ═══ Ablauf: Cinematic Timeline ═══ */
@@ -568,13 +636,22 @@
             flex-shrink: 0;
         }
 
-        /* ── Ablauf: cinematic background ── */
+        /* ── Ablauf: cinematic silhouette ribbon ── */
         .ab-bg-img {
             position: absolute;
-            inset: -10px;
-            background: url('./assets/textures/ablauf-paper.jpg') center/cover no-repeat;
-            filter: brightness(0.55) contrast(1.1);
-            opacity: 0.05;
+            inset: -350px -12px -120px -12px;
+            background: url('./assets/bg/silhouette-ribbon.jpg') center 42% / cover no-repeat;
+            filter: grayscale(1) brightness(1.8) contrast(1.5);
+            opacity: 0.15;
+            mix-blend-mode: screen;
+            -webkit-mask-image:
+                linear-gradient(180deg, transparent 0%, black 5%, black 85%, transparent 100%),
+                linear-gradient(90deg, black 0%, black 80%, transparent 100%);
+            -webkit-mask-composite: destination-in;
+            mask-image:
+                linear-gradient(180deg, transparent 0%, black 5%, black 85%, transparent 100%),
+                linear-gradient(90deg, black 0%, black 80%, transparent 100%);
+            mask-composite: intersect;
             pointer-events: none;
             z-index: 0;
             animation: abBgDrift 24s ease-in-out infinite alternate;
@@ -582,13 +659,13 @@
         .ab-bg-vignette {
             position: absolute;
             inset: 0;
-            background: radial-gradient(ellipse at center, transparent 20%, rgba(9,8,12,0.5) 55%, #0A0705 75%);
+            background: radial-gradient(ellipse at center, transparent 30%, rgba(9,8,12,0.4) 60%, #0A0705 80%);
             pointer-events: none;
             z-index: 1;
         }
         @keyframes abBgDrift {
             0%   { transform: translate(0, 0) scale(1.02); }
-            100% { transform: translate(-5px, 3px) scale(1.03); }
+            100% { transform: translate(-6px, 3px) scale(1.03); }
         }
     </style>
 </head>
@@ -1037,9 +1114,9 @@
 
                     <!-- ── Left: Editorial Narrative ── -->
                     <div class="lg:col-span-5 lg:sticky lg:top-28 lg:self-start">
-                        <span class="k6-reveal-el text-[11px] uppercase tracking-[0.25em] font-medium text-[#6D6050] block mb-6" style="--k6-d: 0ms;">Leistungen</span>
+                        <span class="k6-reveal-el text-[11px] uppercase tracking-[0.25em] font-medium text-[#d6c1a0] block mb-6" style="--k6-d: 0ms;">Leistungen</span>
                         <h2 class="k6-reveal-el text-[1.75rem] md:text-[2.5rem] lg:text-[3rem] font-light leading-[1.08] tracking-[-0.025em] mb-6" style="--k6-d: 100ms; color: #FFF3E6;">
-                            Alles, was Ihr<br>digitaler Auftritt<br>braucht.
+                            Alles, was Ihr<br><span style="color: #d6c1a0;">digitaler</span> Auftritt<br>braucht.
                         </h2>
                         <p class="k6-reveal-el text-[15px] md:text-[16px] text-[#9E9080] font-light leading-[1.7] mb-12 max-w-[360px]" style="--k6-d: 260ms;">
                             Strategie, Design und Technik — als Ergebnis, nicht als Angebot. Komplett auf Vorleistung.
@@ -1095,10 +1172,8 @@
             </div>
         </section>
 
-        <div class="section-line max-w-[1200px] mx-auto"></div>
-
         <!-- ==================== PROZESS ==================== -->
-        <section id="prozess" class="py-28 md:py-40 px-6 relative overflow-hidden">
+        <section id="prozess" class="py-28 md:py-40 px-6 relative">
             <div class="ab-bg-img"></div>
             <div class="ab-bg-vignette"></div>
             <div class="max-w-[1200px] mx-auto relative z-10">
@@ -1178,90 +1253,68 @@
         <section id="portfolio" class="py-28 md:py-36 px-6">
             <div class="max-w-[1200px] mx-auto">
                 <div class="max-w-2xl mb-16 md:mb-20 reveal">
-                    <span class="text-[11px] uppercase tracking-[0.25em] font-medium text-[#6D6050] block mb-6">Portfolio</span>
+                    <span class="text-[11px] uppercase tracking-[0.25em] font-medium text-[#d6c1a0] block mb-6">Portfolio</span>
                     <h2 class="text-[1.75rem] md:text-[2.5rem] lg:text-[3rem] font-light leading-[1.1] tracking-[-0.02em]">
                         Ergebnisse sprechen lauter als Versprechen.
                     </h2>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-6">
-                    <!-- Project 1 -->
-                    <a href="projects/lumiere.html" target="_blank" class="portfolio-card group block reveal reveal-delay-1">
-                        <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-5 relative bg-gradient-to-br from-[#17120a] via-[#120d07] to-[#0b0a0e] border border-[#FFF3E6]/[0.04]">
-                            <div class="portfolio-visual absolute inset-0 p-6 flex flex-col justify-between opacity-50">
-                                <div class="flex justify-between items-center">
-                                    <div class="w-10 h-3 rounded bg-[#FFF3E6]/[0.1]"></div>
-                                    <div class="flex gap-2">
-                                        <div class="w-7 h-2 rounded bg-[#FFF3E6]/[0.06]"></div>
-                                        <div class="w-7 h-2 rounded bg-[#FFF3E6]/[0.06]"></div>
-                                    </div>
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="w-3/4 h-4 rounded bg-[#FFF3E6]/[0.08]"></div>
-                                    <div class="w-1/2 h-3 rounded bg-[#FFF3E6]/[0.05]"></div>
-                                    <div class="w-20 h-6 mt-3 rounded-full bg-[#FFF3E6]/[0.07]"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline justify-between">
-                            <div>
-                                <h3 class="text-base font-medium">Lumière</h3>
-                                <p class="text-[13px] text-[#6D6050] mt-1">Luxus & Lifestyle</p>
-                            </div>
-                            <span class="text-[13px] text-[#4A4030] group-hover:text-[#9E9080] transition-colors">Ansehen&ensp;→</span>
+                <div class="pf-list reveal" id="pf-list">
+                    <a href="projects/lumiere.html" target="_blank" class="pf-item" data-preview="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=760&q=80">
+                        <span class="pf-item__name">Lumière</span>
+                        <div class="pf-item__meta">
+                            <span class="pf-item__cat">Fine Dining & Lifestyle</span>
+                            <span class="pf-item__arrow">→</span>
                         </div>
                     </a>
-
-                    <!-- Project 2 -->
-                    <a href="projects/nordic.html" target="_blank" class="portfolio-card group block reveal reveal-delay-2">
-                        <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-5 relative bg-gradient-to-br from-[#14100a] via-[#100c06] to-[#0b090e] border border-[#FFF3E6]/[0.04]">
-                            <div class="portfolio-visual absolute inset-0 p-6 flex flex-col justify-between opacity-50">
-                                <div class="flex justify-between items-center">
-                                    <div class="w-10 h-3 rounded bg-[#FFF3E6]/[0.1]"></div>
-                                    <div class="w-6 h-6 rounded-full bg-[#FFF3E6]/[0.06]"></div>
-                                </div>
-                                <div class="grid grid-cols-2 gap-2">
-                                    <div class="aspect-square rounded bg-[#FFF3E6]/[0.05]"></div>
-                                    <div class="aspect-square rounded bg-[#FFF3E6]/[0.05]"></div>
-                                    <div class="aspect-square rounded bg-[#FFF3E6]/[0.05]"></div>
-                                    <div class="aspect-square rounded bg-[#FFF3E6]/[0.05]"></div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="flex items-baseline justify-between">
-                            <div>
-                                <h3 class="text-base font-medium">Nordic</h3>
-                                <p class="text-[13px] text-[#6D6050] mt-1">Architektur & Raum</p>
-                            </div>
-                            <span class="text-[13px] text-[#4A4030] group-hover:text-[#9E9080] transition-colors">Ansehen&ensp;→</span>
+                    <a href="projects/nordic.html" target="_blank" class="pf-item" data-preview="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=760&q=80">
+                        <span class="pf-item__name">Nordic</span>
+                        <div class="pf-item__meta">
+                            <span class="pf-item__cat">Architektur & Raum</span>
+                            <span class="pf-item__arrow">→</span>
                         </div>
                     </a>
-
-                    <!-- Project 3 -->
-                    <a href="projects/vestra.html" target="_blank" class="portfolio-card group block reveal reveal-delay-3">
-                        <div class="aspect-[4/3] rounded-2xl overflow-hidden mb-5 relative bg-gradient-to-br from-[#18130a] via-[#130e07] to-[#0b0a0e] border border-[#FFF3E6]/[0.04]">
-                            <div class="portfolio-visual absolute inset-0 p-6 flex flex-col justify-between opacity-50">
-                                <div class="flex justify-between items-center">
-                                    <div class="w-10 h-3 rounded bg-[#FFF3E6]/[0.1]"></div>
-                                </div>
-                                <div class="space-y-2">
-                                    <div class="grid grid-cols-3 gap-2">
-                                        <div class="col-span-2 h-16 rounded bg-[#FFF3E6]/[0.05]"></div>
-                                        <div class="h-16 rounded bg-[#FFF3E6]/[0.05]"></div>
-                                    </div>
-                                    <div class="h-8 rounded bg-[#FFF3E6]/[0.03]"></div>
-                                </div>
-                            </div>
+                    <a href="projects/vestra.html" target="_blank" class="pf-item" data-preview="https://images.unsplash.com/photo-1558618666-fcd25c85f82e?auto=format&fit=crop&w=760&q=80">
+                        <span class="pf-item__name">Vestra</span>
+                        <div class="pf-item__meta">
+                            <span class="pf-item__cat">Mode & Identität</span>
+                            <span class="pf-item__arrow">→</span>
                         </div>
-                        <div class="flex items-baseline justify-between">
-                            <div>
-                                <h3 class="text-base font-medium">Vestra</h3>
-                                <p class="text-[13px] text-[#6D6050] mt-1">Mode & Identität</p>
-                            </div>
-                            <span class="text-[13px] text-[#4A4030] group-hover:text-[#9E9080] transition-colors">Ansehen&ensp;→</span>
+                    </a>
+                    <a href="projects/finflow.html" target="_blank" class="pf-item" data-preview="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=760&q=80">
+                        <span class="pf-item__name">FinFlow</span>
+                        <div class="pf-item__meta">
+                            <span class="pf-item__cat">FinTech & SaaS</span>
+                            <span class="pf-item__arrow">→</span>
+                        </div>
+                    </a>
+                    <a href="projects/zenith.html" target="_blank" class="pf-item" data-preview="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=760&q=80">
+                        <span class="pf-item__name">Zenith</span>
+                        <div class="pf-item__meta">
+                            <span class="pf-item__cat">Wellness & Spa</span>
+                            <span class="pf-item__arrow">→</span>
+                        </div>
+                    </a>
+                    <a href="projects/volt.html" target="_blank" class="pf-item" data-preview="https://images.unsplash.com/photo-1593941707882-a5bba14938c7?auto=format&fit=crop&w=760&q=80">
+                        <span class="pf-item__name">Volt</span>
+                        <div class="pf-item__meta">
+                            <span class="pf-item__cat">Automotive & E-Mobilität</span>
+                            <span class="pf-item__arrow">→</span>
+                        </div>
+                    </a>
+                    <a href="projects/atheneum.html" target="_blank" class="pf-item" data-preview="https://images.unsplash.com/photo-1518998053901-5348d3961a04?auto=format&fit=crop&w=760&q=80">
+                        <span class="pf-item__name">Atheneum</span>
+                        <div class="pf-item__meta">
+                            <span class="pf-item__cat">Kultur & Museum</span>
+                            <span class="pf-item__arrow">→</span>
                         </div>
                     </a>
                 </div>
+            </div>
+
+            <!-- Floating preview (desktop only) -->
+            <div class="pf-preview" id="pf-preview">
+                <img src="" alt="" id="pf-preview-img">
             </div>
         </section>
 
@@ -1827,6 +1880,82 @@
                 });
             }, { threshold: 0.08, rootMargin: '0px 0px -60px 0px' });
             abObserver.observe(section);
+        })();
+
+        // Portfolio hover preview (desktop only)
+        (function() {
+            var preview = document.getElementById('pf-preview');
+            var previewImg = document.getElementById('pf-preview-img');
+            var items = document.querySelectorAll('.pf-item');
+            if (!preview || !items.length) return;
+
+            var isActive = false;
+            var targetX = 0, targetY = 0;
+            var currentX = 0, currentY = 0;
+            var rafId = null;
+            var isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+            // Preload images
+            var imageCache = {};
+            items.forEach(function(item) {
+                var src = item.getAttribute('data-preview');
+                if (src) {
+                    var img = new Image();
+                    img.src = src;
+                    imageCache[src] = img;
+                }
+            });
+
+            function lerp(a, b, t) { return a + (b - a) * t; }
+
+            function animate() {
+                currentX = lerp(currentX, targetX, 0.12);
+                currentY = lerp(currentY, targetY, 0.12);
+                preview.style.left = currentX + 'px';
+                preview.style.top = currentY + 'px';
+                if (isActive) rafId = requestAnimationFrame(animate);
+            }
+
+            items.forEach(function(item) {
+                item.addEventListener('mouseenter', function() {
+                    if (isMobile) return;
+                    var src = this.getAttribute('data-preview');
+                    if (src && previewImg.src !== src) {
+                        previewImg.src = src;
+                        previewImg.alt = this.querySelector('.pf-item__name').textContent;
+                    }
+                    isActive = true;
+                    preview.classList.add('active');
+                    if (!rafId) rafId = requestAnimationFrame(animate);
+                });
+
+                item.addEventListener('mouseleave', function() {
+                    isActive = false;
+                    preview.classList.remove('active');
+                    if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+                });
+
+                item.addEventListener('mousemove', function(e) {
+                    if (isMobile) return;
+                    targetX = e.clientX + 20;
+                    targetY = e.clientY - 120;
+                    // Keep preview in viewport
+                    var vw = window.innerWidth;
+                    var vh = window.innerHeight;
+                    if (targetX + 400 > vw) targetX = e.clientX - 400;
+                    if (targetY + 260 > vh) targetY = vh - 260;
+                    if (targetY < 10) targetY = 10;
+                });
+            });
+
+            // Update mobile check on resize
+            window.addEventListener('resize', function() {
+                isMobile = window.matchMedia('(max-width: 768px)').matches;
+                if (isMobile) {
+                    preview.classList.remove('active');
+                    isActive = false;
+                }
+            }, { passive: true });
         })();
 
         // Contact form

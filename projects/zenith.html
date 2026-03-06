@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zenith Wellness & Spa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #FAF8F4;
+            --surface: #F0EBE3;
+            --text: #2C2C2C;
+            --text-sec: #6B6560;
+            --text-muted: #9B9590;
+            --accent: #7A9E7E;
+            --accent-dark: #5C7650;
+            --accent-light: #C1D0B5;
+            --divider: #E8E3DB;
+            --white: #FFFFFF;
+            --serif: 'Cormorant Garamond', Georgia, serif;
+            --sans: 'Outfit', sans-serif;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: var(--sans);
+            font-weight: 300;
+            background: var(--bg);
+            color: var(--text);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img { display: block; max-width: 100%; }
+
+        a { text-decoration: none; color: inherit; }
+
+        /* Nav */
+        nav {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            z-index: 100;
+            padding: 0 48px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.4s, box-shadow 0.4s;
+        }
+
+        nav.scrolled {
+            background: rgba(250, 248, 244, 0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 1px 0 var(--divider);
+        }
+
+        .nav-logo {
+            font-family: var(--serif);
+            font-size: 1.625rem;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            color: var(--text);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 36px;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a {
+            font-family: var(--sans);
+            font-size: 0.8125rem;
+            font-weight: 400;
+            color: var(--text-sec);
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover { color: var(--accent-dark); }
+
+        .nav-cta {
+            font-family: var(--sans);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            color: var(--white);
+            background: var(--accent-dark);
+            padding: 10px 28px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s, background 0.3s;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            background: #4e6844;
+        }
+
+        /* Hero */
+        .hero {
+            height: 100vh;
+            min-height: 600px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1544161515-4ab6ce6db874?auto=format&fit=crop&w=2000&q=80') center/cover no-repeat;
+            animation: kenBurns 20s ease-out forwards;
+        }
+
+        @keyframes kenBurns {
+            0% { transform: scale(1.08); }
+            100% { transform: scale(1); }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(
+                180deg,
+                rgba(250, 248, 244, 0.15) 0%,
+                rgba(250, 248, 244, 0.4) 40%,
+                rgba(250, 248, 244, 0.75) 70%,
+                rgba(250, 248, 244, 0.92) 100%
+            );
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 720px;
+            padding: 0 24px;
+        }
+
+        .eyebrow {
+            font-family: var(--sans);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent-dark);
+            margin-bottom: 20px;
+        }
+
+        .hero h1 {
+            font-family: var(--serif);
+            font-size: clamp(2.75rem, 6vw, 4.5rem);
+            font-weight: 500;
+            line-height: 1.08;
+            color: var(--text);
+            margin-bottom: 24px;
+        }
+
+        .hero-sub {
+            font-family: var(--sans);
+            font-size: 1.125rem;
+            font-weight: 300;
+            line-height: 1.7;
+            color: var(--text-sec);
+            max-width: 520px;
+            margin: 0 auto 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            font-family: var(--sans);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            padding: 16px 40px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::after { left: 100%; }
+
+        .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(92, 118, 80, 0.25); }
+
+        .btn-accent {
+            background: var(--accent-dark);
+            color: var(--white);
+        }
+
+        .btn-white {
+            background: var(--white);
+            color: var(--accent-dark);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            animation: floatPulse 2.5s ease-in-out infinite;
+        }
+
+        .scroll-indicator span {
+            font-family: var(--sans);
+            font-size: 0.6875rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        .scroll-line {
+            width: 1px;
+            height: 40px;
+            background: var(--accent);
+            opacity: 0.6;
+        }
+
+        @keyframes floatPulse {
+            0%, 100% { transform: translateX(-50%) translateY(0); opacity: 1; }
+            50% { transform: translateX(-50%) translateY(8px); opacity: 0.5; }
+        }
+
+        /* Philosophy */
+        .philosophy {
+            padding: 120px 48px;
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .philosophy-img {
+            width: 100%;
+            height: 560px;
+            object-fit: cover;
+        }
+
+        .philosophy-text { padding: 20px 0; }
+
+        .sage-line {
+            width: 40px;
+            height: 2px;
+            background: var(--accent);
+            margin-bottom: 24px;
+        }
+
+        .section-eyebrow {
+            font-family: var(--sans);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--accent-dark);
+            margin-bottom: 20px;
+        }
+
+        .section-heading {
+            font-family: var(--serif);
+            font-size: clamp(2rem, 3.5vw, 2.75rem);
+            font-weight: 500;
+            line-height: 1.12;
+            color: var(--text);
+            margin-bottom: 28px;
+        }
+
+        .section-body {
+            font-size: 1rem;
+            font-weight: 300;
+            line-height: 1.8;
+            color: var(--text-sec);
+        }
+
+        /* Treatments */
+        .treatments {
+            padding: 100px 0 120px;
+        }
+
+        .treatments-header {
+            text-align: center;
+            max-width: 640px;
+            margin: 0 auto 56px;
+            padding: 0 24px;
+        }
+
+        .treatments-scroll {
+            display: flex;
+            gap: 28px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            padding: 0 48px 20px;
+            scrollbar-width: none;
+        }
+
+        .treatments-scroll::-webkit-scrollbar { display: none; }
+
+        .treatment-card {
+            flex: 0 0 300px;
+            scroll-snap-align: start;
+            background: var(--white);
+            overflow: hidden;
+            transition: transform 0.4s, box-shadow 0.4s;
+        }
+
+        .treatment-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(44, 44, 44, 0.08);
+        }
+
+        .treatment-img-wrap {
+            width: 100%;
+            aspect-ratio: 3 / 4;
+            overflow: hidden;
+        }
+
+        .treatment-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .treatment-card:hover .treatment-img-wrap img {
+            transform: scale(1.05);
+        }
+
+        .treatment-info {
+            padding: 28px 24px;
+        }
+
+        .treatment-info h3 {
+            font-family: var(--serif);
+            font-size: 1.5rem;
+            font-weight: 500;
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .treatment-info p {
+            font-size: 0.9375rem;
+            font-weight: 300;
+            line-height: 1.65;
+            color: var(--text-sec);
+            margin-bottom: 20px;
+        }
+
+        .treatment-meta {
+            font-family: var(--sans);
+            font-size: 0.8125rem;
+            font-weight: 400;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent-dark);
+        }
+
+        /* Testimonial */
+        .testimonial {
+            background: var(--surface);
+            padding: 120px 48px;
+            text-align: center;
+        }
+
+        .quote-mark {
+            font-family: var(--serif);
+            font-size: 5rem;
+            line-height: 1;
+            color: var(--accent-light);
+            margin-bottom: 8px;
+        }
+
+        .quote-text {
+            font-family: var(--serif);
+            font-style: italic;
+            font-size: clamp(1.5rem, 3vw, 2.25rem);
+            font-weight: 400;
+            line-height: 1.45;
+            color: var(--text);
+            max-width: 720px;
+            margin: 0 auto 32px;
+        }
+
+        .quote-author {
+            font-family: var(--sans);
+            font-size: 0.8125rem;
+            font-weight: 500;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--text-muted);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--accent-dark);
+            padding: 120px 48px;
+            text-align: center;
+        }
+
+        .cta-section .section-eyebrow {
+            color: var(--accent-light);
+        }
+
+        .cta-section .section-heading {
+            color: var(--white);
+            margin-bottom: 40px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg);
+            border-top: 1px solid var(--divider);
+            padding: 48px;
+            text-align: center;
+        }
+
+        .footer-logo {
+            font-family: var(--serif);
+            font-size: 1.375rem;
+            font-weight: 500;
+            color: var(--text);
+            letter-spacing: 0.08em;
+            margin-bottom: 16px;
+        }
+
+        .footer-copy {
+            font-size: 0.8125rem;
+            font-weight: 300;
+            color: var(--text-muted);
+        }
+
+        /* Reveal Animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(32px);
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                        transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            .reveal { opacity: 1; transform: none; }
+            .hero-bg { animation: none; transform: scale(1); }
+            .scroll-indicator { animation: none; }
+        }
+
+        /* Mobile */
+        @media (max-width: 900px) {
+            nav { padding: 0 24px; }
+            .nav-links { display: none; }
+
+            .philosophy {
+                grid-template-columns: 1fr;
+                gap: 48px;
+                padding: 80px 24px;
+            }
+
+            .philosophy-img { height: 400px; }
+
+            .treatments { padding: 80px 0 100px; }
+            .treatment-card { flex: 0 0 260px; }
+            .treatments-scroll { padding: 0 24px 20px; gap: 20px; }
+
+            .testimonial { padding: 80px 24px; }
+            .cta-section { padding: 80px 24px; }
+            footer { padding: 36px 24px; }
+        }
+
+        @media (max-width: 600px) {
+            nav { height: 64px; }
+            .nav-logo { font-size: 1.375rem; }
+            .nav-cta { padding: 8px 18px; font-size: 0.75rem; }
+
+            .hero h1 { margin-bottom: 18px; }
+            .hero-sub { font-size: 1rem; margin-bottom: 32px; }
+            .btn { padding: 14px 32px; }
+
+            .philosophy-img { height: 300px; }
+
+            .treatment-card { flex: 0 0 240px; }
+            .treatment-info { padding: 20px 18px; }
+            .treatment-info h3 { font-size: 1.3rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Nav -->
+    <nav id="nav">
+        <a href="#" class="nav-logo">Zenith</a>
+        <div class="nav-links">
+            <a href="#philosophie">Philosophie</a>
+            <a href="#behandlungen">Behandlungen</a>
+            <a href="#erfahrungen">Erfahrungen</a>
+            <a href="#kontakt">Kontakt</a>
+        </div>
+        <a href="#kontakt" class="nav-cta">Termin buchen</a>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="hero-bg"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <p class="eyebrow">Wellness &amp; Regeneration</p>
+            <h1>Finden Sie Ihren Moment der Stille.</h1>
+            <p class="hero-sub">Tauchen Sie ein in eine Welt der Ruhe und Erneuerung. Zenith verbindet jahrhundertealte Traditionen mit modernem Wohlbefinden.</p>
+            <a href="#behandlungen" class="btn btn-accent">Erlebnis entdecken</a>
+        </div>
+        <div class="scroll-indicator">
+            <span>Entdecken</span>
+            <div class="scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Philosophy -->
+    <section class="philosophy" id="philosophie">
+        <img class="philosophy-img reveal" src="https://images.unsplash.com/photo-1600334129128-685c5582fd35?auto=format&fit=crop&w=800&q=80" alt="Natürliche Spa-Elemente und warme Steine" loading="lazy">
+        <div class="philosophy-text reveal">
+            <div class="sage-line"></div>
+            <p class="section-eyebrow">Unsere Philosophie</p>
+            <h2 class="section-heading">Wo Körper und Geist zur Ruhe finden.</h2>
+            <p class="section-body">Bei Zenith glauben wir, dass wahre Erholung dort beginnt, wo Altes und Neues sich verbinden. Unsere Behandlungen wurzeln in Jahrtausende alten Traditionen der Heilkunst und werden durch die neuesten Erkenntnisse der Wissenschaft ergänzt. Jeder Besuch ist eine Reise zu sich selbst — ein bewusstes Innehalten in einer Welt, die nie stillsteht. Unser Ziel ist es, einen Raum zu schaffen, in dem Sie sich vollkommen geborgen fühlen und Ihre innere Balance wiederfinden.</p>
+        </div>
+    </section>
+
+    <!-- Treatments -->
+    <section class="treatments" id="behandlungen">
+        <div class="treatments-header reveal">
+            <p class="section-eyebrow">Behandlungen</p>
+            <h2 class="section-heading">Rituale für Ihr Wohlbefinden</h2>
+        </div>
+        <div class="treatments-scroll">
+            <article class="treatment-card reveal">
+                <div class="treatment-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1519823551278-64ac92734fb1?auto=format&fit=crop&w=600&q=80" alt="Signature Massage Behandlung" loading="lazy">
+                </div>
+                <div class="treatment-info">
+                    <h3>Signature Massage</h3>
+                    <p>Eine tiefenwirksame Ganzkörpermassage mit warmen ätherischen Ölen, die Verspannungen löst und neue Energie freisetzt.</p>
+                    <span class="treatment-meta">90 Min · ab 189&euro;</span>
+                </div>
+            </article>
+            <article class="treatment-card reveal">
+                <div class="treatment-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1540555700478-4be289fbec6d?auto=format&fit=crop&w=600&q=80" alt="Thermal Bad Erlebnis" loading="lazy">
+                </div>
+                <div class="treatment-info">
+                    <h3>Thermal Bad</h3>
+                    <p>Eintauchen in mineralreiches Thermalwasser bei optimaler Temperatur — ein Erlebnis, das den gesamten Körper revitalisiert.</p>
+                    <span class="treatment-meta">60 Min · ab 129&euro;</span>
+                </div>
+            </article>
+            <article class="treatment-card reveal">
+                <div class="treatment-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&w=600&q=80" alt="Gesichtsritual Pflege" loading="lazy">
+                </div>
+                <div class="treatment-info">
+                    <h3>Gesichtsritual</h3>
+                    <p>Ein luxuriöses Pflegeritual mit handverlesenen botanischen Wirkstoffen, das Ihre Haut zum Strahlen bringt.</p>
+                    <span class="treatment-meta">75 Min · ab 159&euro;</span>
+                </div>
+            </article>
+            <article class="treatment-card reveal">
+                <div class="treatment-img-wrap">
+                    <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80" alt="Klangmeditation Zeremonie" loading="lazy">
+                </div>
+                <div class="treatment-info">
+                    <h3>Klangmeditation</h3>
+                    <p>Lassen Sie sich von harmonischen Klangschalen in einen Zustand tiefer Entspannung und innerer Klarheit führen.</p>
+                    <span class="treatment-meta">45 Min · ab 89&euro;</span>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- Testimonial -->
+    <section class="testimonial" id="erfahrungen">
+        <div class="reveal">
+            <div class="quote-mark">&ldquo;</div>
+            <blockquote class="quote-text">Zenith hat mir gezeigt, was echte Erholung bedeutet. Ein Ort, der alle Sinne berührt.</blockquote>
+            <p class="quote-author">&mdash; Sophia M., München</p>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section" id="kontakt">
+        <div class="reveal">
+            <p class="section-eyebrow">Bereit für Ihre Auszeit?</p>
+            <h2 class="section-heading">Ihr Erlebnis beginnt hier.</h2>
+            <a href="#" class="btn btn-white">Termin vereinbaren</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p class="footer-logo">Zenith</p>
+        <p class="footer-copy">&copy; 2026 Zenith Wellness. Alle Rechte vorbehalten.</p>
+    </footer>
+
+    <script>
+        // Nav scroll effect
+        const nav = document.getElementById('nav');
+        let ticking = false;
+        window.addEventListener('scroll', function () {
+            if (!ticking) {
+                requestAnimationFrame(function () {
+                    nav.classList.toggle('scrolled', window.scrollY > 60);
+                    ticking = false;
+                });
+                ticking = true;
+            }
+        });
+
+        // Scroll reveal
+        const reveals = document.querySelectorAll('.reveal');
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            reveals.forEach(function (el) { observer.observe(el); });
+        } else {
+            reveals.forEach(function (el) { el.classList.add('visible'); });
+        }
+    </script>
+</body>
+</html>
